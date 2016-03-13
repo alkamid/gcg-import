@@ -41,7 +41,7 @@ if (!$con) {
 mysqli_query($con, "SET NAMES 'utf8'");
 
 mysqli_set_charset('utf8', $con);
-$sql="SELECT * FROM PFSPLAYER";
+$sql="SELECT id, name_alph FROM PFSPLAYER ORDER BY name_alph";
 $result = mysqli_query($con,$sql);
 while($row = mysqli_fetch_array($result)) {
     echo "<option value='". $row['id'] . "'>" . $row['name_alph'] . "</option>";

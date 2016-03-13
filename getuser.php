@@ -44,6 +44,9 @@ $sql="SELECT PFSTOURS.name, PFSTOURHH.runda, PFSTOURHH.result1, PFSPLAYER.name_s
 
 $result = mysqli_query($con,$sql);
 
+$sql_singleuser = "SELECT name_show FROM PFSPLAYER WHERE id = '" .$q."';";
+$result_singleuser = mysqli_query($con, $sql_singleuser);
+$user = mysqli_fetch_array($result_singleuser);
 echo "<table>
 <tr>
 <th>Turniej</th>
@@ -58,10 +61,10 @@ while($row = mysqli_fetch_array($result)) {
     echo "<td>" . $row['name'] . "</td>";
     echo "<td>" . $row['runda'] . "</td>";
    if ($row['host'] == 1) {
-   $order = array($q, $row['name_show'], $row['result1'], $row['result2']);
+   $order = array($user['name_show'], $row['name_show'], $row['result1'], $row['result2']);
    }
    else {
-   $order = array($row['name_show'], $q, $row['result2'], $row['result1']);
+   $order = array($row['name_show'], $user['name_show'], $row['result2'], $row['result1']);
    }
     echo "<td>" . $order[0] . "</td>";
     echo "<td>" . $order[1] . "</td>";
