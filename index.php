@@ -38,7 +38,9 @@ $con = mysqli_connect('localhost','root', $mysqlpwd, $mysqldbname);
 if (!$con) {
     die('Could not connect: ' . mysqli_error($con));
 }
-mysql_set_charset('utf8mb4', $con);
+mysqli_query($con, "SET NAMES 'utf8'");
+
+mysqli_set_charset('utf8', $con);
 $sql="SELECT * FROM PFSPLAYER";
 $result = mysqli_query($con,$sql);
 while($row = mysqli_fetch_array($result)) {

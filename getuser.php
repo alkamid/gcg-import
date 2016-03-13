@@ -18,6 +18,7 @@ th {text-align: left;}
 <body>
 
 <?php
+
 $q = intval($_GET['q']);
 
 include "config.php";
@@ -28,7 +29,9 @@ if (!$con) {
     die('Could not connect: ' . mysqli_error($con));
 }
 
-mysqli_select_db($con,"scrabble");
+mysqli_query($con, "SET NAMES 'utf8'");
+
+mysqli_set_charset('utf8', $con);
 
 $sql="SELECT PFSTOURS.name, PFSTOURHH.runda, PFSTOURHH.result1, PFSPLAYER.name_show, PFSTOURHH.result2, PFSTOURHH.host
       FROM PFSTOURHH
