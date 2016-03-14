@@ -24,7 +24,7 @@ $q = intval($_GET['q']);
 
 include "config.php";
    
-$con = mysqli_connect('localhost','root', $mysqlpwd, $mysqldbname);
+$con = mysqli_connect($mysqlhost,$mysqluser, $mysqlpwd, $mysqldbname);
 
 if (!$con) {
     die('Could not connect: ' . mysqli_error($con));
