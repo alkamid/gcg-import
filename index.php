@@ -40,9 +40,14 @@ function showUser(str) {
                      data: form_data,                         
                      type: 'post',
                      success: function(php_script_response){
-                         alert(php_script_response); // display response from the PHP script, if any
-                         var temp_fname = $(event.target).attr('data-turniej') + '_' + $(event.target).attr('data-runda') + '_' + $(event.target).attr('data-player1') + '_' + $(event.target).attr('data-player2') + '.gcg'
-                         $(event.target).closest('td').prepend('<a href=upload/gcg/' + temp_fname + '>[zapis]</a> ');
+                         var response = $.parseJSON(php_script_response);
+                         if ( response.status == 'error') {
+                             alert( response.errormsg );
+                         }
+                         else {
+                             var temp_fname = $(event.target).attr('data-turniej') + '_' + $(event.target).attr('data-runda') + '_' + $(event.target).attr('data-player1') + '_' + $(event.target).attr('data-player2') + '.gcg';
+                             $(event.target).closest('td').prepend('<a href=upload/gcg/' + temp_fname + '>[zapis]</a> ');
+                         }
                      }
                      });
                 });

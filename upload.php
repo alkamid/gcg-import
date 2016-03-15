@@ -1,10 +1,14 @@
 <?php
 
+header('Content-type: application/json');
+$response_array['status'] = 'error';
+
     if ( 0 < $_FILES['file']['error'] ) {
-        echo 'Error: ' . $_FILES['file']['error'] . '<br>';
+        $response_array['errormsg'] = $_FILES['file']['error'];
     }
     else if ($_FILES["file"]["size"] > 3000) {
-        echo "Zbyt duży plik (ograniczenie do 3kb).";
+        $response_array['errormsg'] = 'Zbyt duży plik (ograniczenie do 3kB)';
+
     }
     else {
         $tmpName  = $_FILES['file']['tmp_name'];
@@ -18,8 +22,8 @@
 
         if (!$con) {
             die('Could not connect: ' . mysqli_error($con));
+            $response_array['status'] = 'error';
         }
-        $gcg = mysqli_real_escape_string($con, $content);
         $new_fname = $_POST['turniej'] . '_' . $_POST['runda'] . '_' . $_POST['player1'] . '_' . $_POST['player2'];
         //PFSTOURHH.gcg: NULL (no gcg file) / 1 (one player uploaded a file) / 2 (two players uploaded a file)
         $query = "UPDATE PFSTOURHH SET gcg = 1 WHERE turniej = " . $_POST['turniej'] . " AND runda = " .$_POST['runda'] . " AND player1= ". $_POST['player1'] ." AND player2= ". $_POST['player2'] .";";
@@ -27,15 +31,19 @@
 
         if ($move_success) {
             if (mysqli_query($con, $query)) {
-                echo "Gra dodana pomyślnie";
+                $response_array['status'] = 'success';
             } else {
-                echo "Błąd przy dodawaniu gry: " . mysqli_error($con);
+                $response_array['status'] = 'error';
+                $response_array['errormsg'] = 'Błąd przy dodawaniu gry (PHP)' . mysqli_error($con);
+
             }
         }
         else {
-            echo "Błąd przy dodawaniu gry (PHP)";
+            $response_array['status'] = 'error';
+            $response_array['errormsg'] = 'Błąd przy dodawaniu gry (PHP)';
         }
         
     }
+echo json_encode($response_array);
 
 ?>
