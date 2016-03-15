@@ -78,10 +78,14 @@ while($row = mysqli_fetch_array($result)) {
     
     if ($row['gcg'] != 0) {
         $temp_fname = $row['turniej'] . '_' . $row['runda'] . '_' . $order[1] . '_' . $order[3] . '.gcg';
-        echo "<a href=upload/gcg/" . $temp_fname . ">[zapis]</a> ";
+        if (file_exists('upload/gcg/' . $temp_fname)) {
+                echo "<a href=upload/gcg/" . $temp_fname . ">[zapis]</a> ";
+            }
     }
     echo "<input class='inp' data-index=" . $i ." type='file' name='gcg' />";
-    echo "<button class='upload' data-index=" . $i . " data-turniej=" . $row['turniej'] . " data-runda=" . $row['runda'] . " data-player1=" . $order[1] . " data-player2=" . $order[3] . ">Dodaj</button></td>";
+    echo "<button class='upload' data-index=" . $i . " data-turniej=" . $row['turniej'] . " data-runda=";
+    echo $row['runda'] . " data-player1=" . $order[1] . " data-player2=" . $order[3];
+    echo " data-sum-points=" . ($order[4] + $order[5]) . ">Dodaj</button></td>";
     echo "</tr>";
     $i += 1;
 }

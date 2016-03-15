@@ -1,21 +1,45 @@
 <?php
 
+function validateGCG($gcg_file, $point_sum) {
+    $gcg = file($gcg_file, FILE_IGNORE_NEW_LINES);
+    foreach(array_reverse($gcg) as $line) {
+        if ($line[0] == '>') {
+            $lsp = explode(' ', $line);
+            if (!isset($playerA)) {
+                    $playerA = array($lsp[0], end($lsp));
+                }
+            elseif ($lsp[0] != $playerA[0]) {
+                $playerB = array($lsp[0], end($lsp));
+                $sum_gcg = $playerA[1] + $playerB[1];
+                if ($sum_gcg != $point_sum) {
+                    return array(FALSE, 'Suma punktów się nie zgadza (.gcg: ' . $sum_gcg . ', PFS: ' . $point_sum . ').');
+                }
+                else {
+                    return 1;
+                }
+            }
+        }
+    }
+}
+
+
+//http://stackoverflow.com/questions/9676084/how-do-i-return-a-proper-success-error-message-for-jquery-ajax-using-php
 header('Content-type: application/json');
 $response_array['status'] = 'error';
+
+$validation = validateGCG($_FILES['file']['tmp_name'], $_POST['sum_points']);
 
     if ( 0 < $_FILES['file']['error'] ) {
         $response_array['errormsg'] = $_FILES['file']['error'];
     }
-    else if ($_FILES["file"]["size"] > 3000) {
+    elseif ($_FILES["file"]["size"] > 3000) {
         $response_array['errormsg'] = 'Zbyt duży plik (ograniczenie do 3kB)';
-
+    }
+    elseif ($validation != 1) {
+        
+        $response_array['errormsg'] = $validation[1];
     }
     else {
-        $tmpName  = $_FILES['file']['tmp_name'];
-        $fp      = fopen($tmpName, 'r');
-        $content = fread($fp, filesize($tmpName));
-        fclose($fp);
-
         include "config.php";
    
         $con = mysqli_connect($mysqlhost,$mysqluser, $mysqlpwd, $mysqldbname);

@@ -30,6 +30,7 @@ function showUser(str) {
                     form_data.append('runda', $(event.target).attr('data-runda'));
                     form_data.append('player1', $(event.target).attr('data-player1'));
                     form_data.append('player2', $(event.target).attr('data-player2'));
+                    form_data.append('sum_points', $(event.target).attr('data-sum-points'));
                     alert(form_data);                             
                     $.ajax({
                             url: 'upload.php', // point to server-side PHP script 
