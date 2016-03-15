@@ -19,15 +19,21 @@
         if (!$con) {
             die('Could not connect: ' . mysqli_error($con));
         }
-        print_r(mysqli_real_escape_string($content));
-        mysqli_set_charset($con, "utf8mb4");
         $gcg = mysqli_real_escape_string($con, $content);
-        $query = "UPDATE PFSTOURHH SET gcg = '$gcg' WHERE turniej = " . $_POST['turniej'] . " AND runda = " .$_POST['runda'] . " AND player1= ". $_POST['player1'] .";";
-        
-        if (mysqli_query($con, $query)) {
-            echo "Gra dodana pomyślnie";
-        } else {
-            echo "Błąd przy dodawaniu gry: " . mysqli_error($con);
+        $new_fname = $_POST['turniej'] . '_' . $_POST['runda'] . '_' . $_POST['player1'] . '_' . $_POST['player2'];
+        //PFSTOURHH.gcg: NULL (no gcg file) / 1 (one player uploaded a file) / 2 (two players uploaded a file)
+        $query = "UPDATE PFSTOURHH SET gcg = 1 WHERE turniej = " . $_POST['turniej'] . " AND runda = " .$_POST['runda'] . " AND player1= ". $_POST['player1'] ." AND player2= ". $_POST['player2'] .";";
+        $move_success = move_uploaded_file($_FILES['file']['tmp_name'], 'upload/gcg/' . $new_fname . '.gcg');
+
+        if ($move_success) {
+            if (mysqli_query($con, $query)) {
+                echo "Gra dodana pomyślnie";
+            } else {
+                echo "Błąd przy dodawaniu gry: " . mysqli_error($con);
+            }
+        }
+        else {
+            echo "Błąd przy dodawaniu gry (PHP)";
         }
         
     }

@@ -29,6 +29,7 @@ function showUser(str) {
                     form_data.append('turniej', $(event.target).attr('data-turniej'));
                     form_data.append('runda', $(event.target).attr('data-runda'));
                     form_data.append('player1', $(event.target).attr('data-player1'));
+                    form_data.append('player2', $(event.target).attr('data-player2'));
                     alert(form_data);                             
                     $.ajax({
                             url: 'upload.php', // point to server-side PHP script 
@@ -40,6 +41,8 @@ function showUser(str) {
                      type: 'post',
                      success: function(php_script_response){
                          alert(php_script_response); // display response from the PHP script, if any
+                         var temp_fname = $(event.target).attr('data-turniej') + '_' + $(event.target).attr('data-runda') + '_' + $(event.target).attr('data-player1') + '_' + $(event.target).attr('data-player2') + '.gcg'
+                         $(event.target).closest('td').prepend('<a href=upload/gcg/' + temp_fname + '>[zapis]</a> ');
                      }
                      });
                 });
