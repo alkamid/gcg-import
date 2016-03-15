@@ -3,6 +3,9 @@
     if ( 0 < $_FILES['file']['error'] ) {
         echo 'Error: ' . $_FILES['file']['error'] . '<br>';
     }
+    else if ($_FILES["file"]["size"] > 3000) {
+        echo "Zbyt duży plik (ograniczenie do 3kb).";
+    }
     else {
         $tmpName  = $_FILES['file']['tmp_name'];
         $fp      = fopen($tmpName, 'r');
