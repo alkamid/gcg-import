@@ -1,21 +1,22 @@
 <?php
 
-function validateGCG($gcg_file, $point_sum) {
+function validateGCG($gcg_file, $p1, $p2) {
     $gcg = file($gcg_file, FILE_IGNORE_NEW_LINES);
     foreach(array_reverse($gcg) as $line) {
-        if ($line[0] == '>') {
+        if (substr($line, 0, 1) == '>') {
             $lsp = explode(' ', $line);
-            if (!isset($playerA)) {
-                    $playerA = array($lsp[0], end($lsp));
-                }
+           
+            if (!isset($playerA) && substr($lsp[2], 0, 1) == '(') {
+                $letters_value = intval(substr($lsp[3], 1)) / 2;
+                $playerA = array($lsp[0], intval(end($lsp))-$letters_value);
+            }
             elseif ($lsp[0] != $playerA[0]) {
-                $playerB = array($lsp[0], end($lsp));
-                $sum_gcg = $playerA[1] + $playerB[1];
-                if ($sum_gcg != $point_sum) {
-                    return array(FALSE, 'Suma punktów się nie zgadza (.gcg: ' . $sum_gcg . ', PFS: ' . $point_sum . ').');
+                $playerB = array($lsp[0], intval(end($lsp))-$letters_value);
+                if (($playerA[1] == $p1 && $playerB[1] == $p2) || ($playerA[1] == $p2 && $playerB[1])) {
+                    return 1;
                 }
                 else {
-                    return 1;
+                    return array(FALSE, 'Wynik się nie zgadza (.gcg: ' . $p1 . '–' . $p2 . ', PFS: ' . $playerA[1] . '–' . $playerB[1] . ').');
                 }
             }
         }
@@ -27,7 +28,7 @@ function validateGCG($gcg_file, $point_sum) {
 header('Content-type: application/json');
 $response_array['status'] = 'error';
 
-$validation = validateGCG($_FILES['file']['tmp_name'], $_POST['sum_points']);
+$validation = validateGCG($_FILES['file']['tmp_name'], $_POST['p1pts'], $_POST['p2pts']);
 
     if ( 0 < $_FILES['file']['error'] ) {
         $response_array['errormsg'] = $_FILES['file']['error'];
