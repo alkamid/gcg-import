@@ -30,8 +30,8 @@ function showUser(str) {
                     form_data.append('runda', $(event.target).attr('data-runda'));
                     form_data.append('player1', $(event.target).attr('data-player1'));
                     form_data.append('player2', $(event.target).attr('data-player2'));
-                    form_data.append('sum_points', $(event.target).attr('data-sum-points'));
-                    alert(form_data);                             
+                    form_data.append('p1pts', $(event.target).attr('data-p1pts'));
+                    form_data.append('p2pts', $(event.target).attr('data-p2pts'));
                     $.ajax({
                             url: 'upload.php', // point to server-side PHP script 
                      dataType: 'text',  // what to expect back from the PHP script, if anything
@@ -47,7 +47,9 @@ function showUser(str) {
                          }
                          else {
                              var temp_fname = $(event.target).attr('data-turniej') + '_' + $(event.target).attr('data-runda') + '_' + $(event.target).attr('data-player1') + '_' + $(event.target).attr('data-player2') + '.gcg';
-                             $(event.target).closest('td').prepend('<a href=upload/gcg/' + temp_fname + '>[zapis]</a> ');
+                             var board_link = '<a href=board.php?turniej=' + $(event.target).attr('data-turniej') + '&runda=' + $(event.target).attr('data-runda') + '&p1=' + $(event.target).attr('data-player1') + '&p2=' + $(event.target).attr('data-player2') + '>';
+
+                             $(event.target).closest('td').prepend(board_link + '[zapis]</a> ');
                          }
                      }
                      });

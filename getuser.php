@@ -85,7 +85,7 @@ while($row = mysqli_fetch_array($result)) {
     echo "<input class='inp' data-index=" . $i ." type='file' name='gcg' />";
     echo "<button class='upload' data-index=" . $i . " data-turniej=" . $row['turniej'] . " data-runda=";
     echo $row['runda'] . " data-player1=" . $order[1] . " data-player2=" . $order[3];
-    echo " data-sum-points=" . ($order[4] + $order[5]) . ">Dodaj</button></td>";
+    echo " data-p1pts=" . $order[4] . " data-p2pts= " . $order[5] . ">Dodaj</button></td>";
     echo "</tr>";
     $i += 1;
 }
