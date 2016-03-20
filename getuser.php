@@ -79,7 +79,7 @@ while($row = mysqli_fetch_array($result)) {
     if ($row['gcg'] != 0) {
         $temp_fname = $row['turniej'] . '_' . $row['runda'] . '_' . $order[1] . '_' . $order[3] . '.gcg';
         if (file_exists('upload/gcg/' . $temp_fname)) {
-                echo "<a href=upload/gcg/" . $temp_fname . ">[zapis]</a> ";
+                echo '<a href=board.php?turniej=' . $row['turniej'] . '&runda=' .$row['runda'] . '&p1=' . $order[1] . '&p2=' . $order[3] . '>[zapis]</a> ';
             }
     }
     echo "<input class='inp' data-index=" . $i ." type='file' name='gcg' />";
