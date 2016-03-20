@@ -50,11 +50,12 @@ $validation = validateGCG($_FILES['file']['tmp_name'], $_POST['sum_points']);
         }
         $new_fname = $_POST['turniej'] . '_' . $_POST['runda'] . '_' . $_POST['player1'] . '_' . $_POST['player2'];
         //PFSTOURHH.gcg: NULL (no gcg file) / 1 (one player uploaded a file) / 2 (two players uploaded a file)
-        $query = "UPDATE PFSTOURHH SET gcg = 1 WHERE turniej = " . $_POST['turniej'] . " AND runda = " .$_POST['runda'] . " AND player1= ". $_POST['player1'] ." AND player2= ". $_POST['player2'] .";";
+        $query1 = "UPDATE PFSTOURHH SET gcg = 1 WHERE turniej = " . $_POST['turniej'] . " AND runda = " .$_POST['runda'] . " AND player1= ". $_POST['player1'] ." AND player2= ". $_POST['player2'] .";";
+        $query2 = "UPDATE PFSTOURHH SET gcg = 1 WHERE turniej = " . $_POST['turniej'] . " AND runda = " .$_POST['runda'] . " AND player2= ". $_POST['player1'] ." AND player1= ". $_POST['player2'] .";";
         $move_success = move_uploaded_file($_FILES['file']['tmp_name'], 'upload/gcg/' . $new_fname . '.gcg');
 
         if ($move_success) {
-            if (mysqli_query($con, $query)) {
+            if (mysqli_query($con, $query1) && mysqli_query($con, $query2)) {
                 $response_array['status'] = 'success';
             } else {
                 $response_array['status'] = 'error';
