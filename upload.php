@@ -10,7 +10,7 @@ function validateGCG($gcg_file, $p1, $p2) {
                 $letters_value = intval(substr($lsp[3], 1)) / 2;
                 $playerA = array($lsp[0], intval(end($lsp))-$letters_value);
             }
-            elseif ($lsp[0] != $playerA[0]) {
+            elseif (isset($playerA) && $lsp[0] != $playerA[0]) {
                 $playerB = array($lsp[0], intval(end($lsp))-$letters_value);
                 if (($playerA[1] == $p1 && $playerB[1] == $p2) || ($playerA[1] == $p2 && $playerB[1])) {
                     return 1;
@@ -21,6 +21,7 @@ function validateGCG($gcg_file, $p1, $p2) {
             }
         }
     }
+    return array(FALSE, 'Nie znaleziono wyniku — prawdopodobnie nieprawidłowy plik .gcg');
 }
 
 
