@@ -13,6 +13,24 @@ table, td, th {
 }
 
 th {text-align: left;}
+
+.fileUpload {
+    position: relative;
+    overflow: hidden;
+    margin: 10px;
+}
+.fileUpload input.upload {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 0;
+    padding: 0;
+    font-size: 20px;
+    cursor: pointer;
+    opacity: 0;
+    filter: alpha(opacity=0);
+}
+
 </style>
 
 </head>
@@ -75,17 +93,22 @@ while($row = mysqli_fetch_array($result)) {
     echo "<td>" . $order[4] . "</td>";
     echo "<td>" . $order[5] . "</td>";
     echo "<td>";
+
+    $temp_fname = $row['turniej'] . '_' . $row['runda'] . '_' . $order[1] . '_' . $order[3] . '.gcg';
     
-    if ($row['gcg'] != 0) {
-        $temp_fname = $row['turniej'] . '_' . $row['runda'] . '_' . $order[1] . '_' . $order[3] . '.gcg';
-        if (file_exists('upload/gcg/' . $temp_fname)) {
-                echo '<a href=board.php?turniej=' . $row['turniej'] . '&runda=' .$row['runda'] . '&p1=' . $order[1] . '&p2=' . $order[3] . '>[zapis]</a> ';
-            }
+    if ($row['gcg'] != 0 && file_exists('upload/gcg/' . $temp_fname)) {
+        echo '<a href=board.php?turniej=' . $row['turniej'] . '&runda=' .$row['runda'] . '&p1=' . $order[1] . '&p2=' . $order[3] . '>[zapis]</a> ';
     }
-    echo "<input class='inp' data-index=" . $i ." type='file' name='gcg' />";
-    echo "<button class='upload' data-index=" . $i . " data-turniej=" . $row['turniej'] . " data-runda=";
-    echo $row['runda'] . " data-player1=" . $order[1] . " data-player2=" . $order[3];
-    echo " data-p1pts=" . $order[4] . " data-p2pts= " . $order[5] . ">Dodaj</button></td>";
+    else {
+        echo '<div class="fileUpload btn btn-primary">';
+        echo '<span>Dodaj</span>';
+        echo '<input type="file" class="upload" ';
+        echo 'data-index=' . $i . ' data-turniej=' . $row['turniej'] . ' data-runda=';
+        echo $row['runda'] . " data-player1=" . $order[1] . " data-player2=" . $order[3];
+        echo " data-p1pts=" . $order[4] . " data-p2pts= " . $order[5];
+        echo ' /></div>';
+    }
+    echo '</td>';
     echo "</tr>";
     $i += 1;
 }

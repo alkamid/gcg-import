@@ -1,6 +1,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="bootstrap.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 <script>
 function showUser(str) {
@@ -20,10 +21,10 @@ function showUser(str) {
                 document.getElementById("txtHint").innerHTML = xmlhttp.responseText;
                 //http://stackoverflow.com/questions/23980733/jquery-ajax-file-upload-php
                 //http://stackoverflow.com/a/21061777/2261298
-                $('.upload').on('click', function(event) {
+                $('.upload').on('change', function(event) {
                     var index = $(event.target).attr('data-index');
-                    var file_data = $('.inp*[data-index=' + index + ']').prop('files')[0];
-                    console.log(file_data);
+                    var file_data = $(event.target).prop('files')[0];
+                    //console.log(file_data);
                     var form_data = new FormData();                  
                     form_data.append('file', file_data);
                     form_data.append('turniej', $(event.target).attr('data-turniej'));
