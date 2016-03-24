@@ -51,6 +51,7 @@ function showUser(str) {
                              var board_link = '<a href=board.php?turniej=' + $(event.target).attr('data-turniej') + '&runda=' + $(event.target).attr('data-runda') + '&p1=' + $(event.target).attr('data-player1') + '&p2=' + $(event.target).attr('data-player2') + '>';
 
                              $(event.target).closest('td').prepend(board_link + '[zapis]</a> ');
+                             $(event.target).closest('.fileUpload').hide();
                          }
                      }
                      });
