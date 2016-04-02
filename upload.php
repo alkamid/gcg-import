@@ -48,6 +48,10 @@ $validation = validateGCG($_FILES['file']['tmp_name'], $_POST['p1pts'], $_POST['
         include "config.php";
 
         $myfile_utf = utf_convert(fread($myfile, filesize($_FILES['file']['tmp_name'])));
+        if ((mb_detect_encoding($myfile_utf, 'UTF-8', true) == 'UTF-8') === FALSE) {
+            $response_array['errormsg'] = 'Nieprawidłowe kodowanie pliku (nie-UTF8)';
+        }
+        else {
         fclose($myfile);
         $con = mysqli_connect($mysqlhost,$mysqluser, $mysqlpwd, $mysqldbname);
         mysqli_set_charset($con, 'utf8');
@@ -57,18 +61,16 @@ $validation = validateGCG($_FILES['file']['tmp_name'], $_POST['p1pts'], $_POST['
             $response_array['status'] = 'error';
         }
         $new_fname = $_POST['turniej'] . '_' . $_POST['runda'] . '_' . $_POST['player1'] . '_' . $_POST['player2'];
-        //PFSTOURHH.gcg: NULL (no gcg file) / 1 (one player uploaded a file) / 2 (two players uploaded a file)
+
         $query1 = "UPDATE PFSTOURHH SET gcg = '" . mysqli_real_escape_string($con, $myfile_utf) . "' WHERE turniej = " . $_POST['turniej'] . " AND runda = " .$_POST['runda'] . " AND player1= ". $_POST['player1'] ." AND player2= ". $_POST['player2'] .";";
         $query2 = "UPDATE PFSTOURHH SET gcg = '" . mysqli_real_escape_string($con, $myfile_utf) . "' WHERE turniej = " . $_POST['turniej'] . " AND runda = " .$_POST['runda'] . " AND player2= ". $_POST['player1'] ." AND player1= ". $_POST['player2'] .";";
         
-        //$move_success = move_uploaded_file($_FILES['file']['tmp_name'], 'upload/gcg/' . $new_fname . '.gcg');
-
-        //if ($move_success) {
         if (mysqli_query($con, $query1) && mysqli_query($con, $query2)) {
             $response_array['status'] = 'success';
         } else {
             $response_array['status'] = 'error';
             $response_array['errormsg'] = 'Błąd przy dodawaniu gry (MySQL)' . mysqli_error($con);
+        }
         }
         
     }

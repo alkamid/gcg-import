@@ -50,9 +50,16 @@ foreach ($board_bonus as $k => $v) {
     }
 }
 
+$length = count($moves);
+for ($k = 0; $k < $length; $k++) {
+    $mv = explode(' ', $moves[$k]);
+    if ($k < $length - 1) {
+        $next_mv = explode(' ', $moves[$k+1]);
+        if ($next_mv[2] == '--') {
+            continue;
+        }
+    }
 
-foreach ($moves as $move) {
-    $mv = explode(' ', $move);
     if ($mv[2][0] != '-') {
         if (ord(substr($mv[2], -1)) > 64 && ord(substr($mv[2], -1)) < 80) {
             $start_row = intval(substr($mv[2], 0, -1))-1;
@@ -77,10 +84,8 @@ foreach ($moves as $move) {
             }
             }
     }
-        
+
 }
-
-
     print '<div id="board">
     </table>
     <table id="plansza" class="onleft">
