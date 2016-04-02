@@ -122,6 +122,8 @@ for ($i = 0; $i < 17; $i++) {
 $output .= '</tr></table></div>';
 print $output;
 
+print '[<a href="download.php?turniej=' . $_GET['turniej'] . '&runda=' . $_GET['runda'] . '&p1=' . $_GET['p1'] . '">ściągnij zapis</a>]<br /><br />';
+
 $gcgprint = '<div id="gcg">';
 $gcgprint .= nl2br($gcgtext);
 
