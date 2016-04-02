@@ -42,11 +42,13 @@ function showUser(str) {
                      data: form_data,                         
                      type: 'post',
                      success: function(php_script_response){
+                         console.log(php_script_response);
                          var response = $.parseJSON(php_script_response);
                          if ( response.status == 'error') {
                              alert( response.errormsg );
                          }
                          else {
+                             console.log(response);
                              var temp_fname = $(event.target).attr('data-turniej') + '_' + $(event.target).attr('data-runda') + '_' + $(event.target).attr('data-player1') + '_' + $(event.target).attr('data-player2') + '.gcg';
                              var board_link = '<a href=board.php?turniej=' + $(event.target).attr('data-turniej') + '&runda=' + $(event.target).attr('data-runda') + '&p1=' + $(event.target).attr('data-player1') + '&p2=' + $(event.target).attr('data-player2') + '>';
 

@@ -96,7 +96,7 @@ while($row = mysqli_fetch_array($result)) {
 
     $temp_fname = $row['turniej'] . '_' . $row['runda'] . '_' . $order[1] . '_' . $order[3] . '.gcg';
     
-    if ($row['gcg'] != 0 && file_exists('upload/gcg/' . $temp_fname)) {
+    if (strlen($row['gcg']) > 30) {
         echo '<a href=board.php?turniej=' . $row['turniej'] . '&runda=' .$row['runda'] . '&p1=' . $order[1] . '&p2=' . $order[3] . '>[zapis]</a> ';
     }
     else {

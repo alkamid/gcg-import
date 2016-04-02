@@ -24,58 +24,13 @@ div#gcg {font-family:monospace;}
 
 <?php
 
-
-function utf_convert($inp) {
-    $in_chars = $out_chars = array();
-         
-    $in_chars[] = "\245";
-    $out_chars[] = "Ą";
-    $in_chars[] = "\271";
-    $out_chars[] = "ą";
-    $in_chars[] = "\306";
-    $out_chars[] = "Ć";
-    $in_chars[] = "\346";
-    $out_chars[] = "ć";
-    $in_chars[] = "\217";
-    $out_chars[] = "Ź";
-    $in_chars[] = "\237";
-    $out_chars[] = "Ź";
-    $in_chars[] = "\312";
-    $out_chars[] = "Ę";
-    $in_chars[] = "\352";
-    $out_chars[] = "ę";
-    $in_chars[] = "\257";
-    $out_chars[] = "Ż";
-    $in_chars[] = "\277";
-    $out_chars[] = "ż";
-    $in_chars[] = "\243";
-    $out_chars[] = "Ł";
-    $in_chars[] = "\263";
-    $out_chars[] = "ł";
-    $in_chars[] = "\321";
-    $out_chars[] = "Ń";
-    $in_chars[] = "\361";
-    $out_chars[] = "ń";
-    $in_chars[] = "\214";
-    $out_chars[] = "Ś";
-    $in_chars[] = "\234";
-    $out_chars[] = "ś";
-    $in_chars[] = "\323";
-    $out_chars[] = "Ó";
-    $in_chars[] = "\363";
-    $out_chars[] = "ó";
-    $converted = str_replace($in_chars, $out_chars, $inp);
-    return $converted;
-}
-
 mb_internal_encoding("UTF-8");
 
 error_reporting( E_ALL );
 
-function showBoard($moves) {
+function showBoard($moves, $gcgtext) {
 $board = array_fill(0, 15, array_fill(0, 15, 0));
 $j =0;
-
 
 $board_bonus['word3'] = array(array(0, 0), array(14,14), array(0, 14), array(14, 0), array(0,7),
                       array(7,0), array(14,7), array(7,14));
@@ -94,6 +49,7 @@ foreach ($board_bonus as $k => $v) {
         $board_bonuses[$t[0]][$t[1]] = $k;
     }
 }
+
 
 foreach ($moves as $move) {
     $mv = explode(' ', $move);
@@ -125,7 +81,6 @@ foreach ($moves as $move) {
 }
 
 
-
     print '<div id="board">
     </table>
     <table id="plansza" class="onleft">
@@ -153,6 +108,8 @@ for ($row = 0; $row < 15; $row++) {
     }
     $output .= '<th>&nbsp;</th></tr>';
 }
+
+
 $output .= '<tr>';
 for ($i = 0; $i < 17; $i++) {
     $output .= '<th>&nbsp;</th>';
@@ -161,11 +118,8 @@ $output .= '</tr></table></div>';
 print $output;
 
 $gcgprint = '<div id="gcg">';
+$gcgprint .= nl2br($gcgtext);
 
-$moves_fname = 'upload/gcg/' . $_GET['turniej'] . '_' . $_GET['runda'] . '_' . $_GET['p1'] . '_' . $_GET['p2'] . '.gcg';
-
-$myfile = fopen($moves_fname, "r") or die("Unable to open file!");
-$gcgprint .= nl2br(utf_convert(fread($myfile,filesize($moves_fname))));
 fclose($myfile);
 
 $gcgprint .='</div>';
@@ -175,17 +129,22 @@ print $gcgprint;
 
 
 function generateMovesTable($gcg) {
-    $myfile = fopen($gcg, "r") or die("Unabe to open file!");
-    $myfile_utf = utf_convert(fread($myfile, filesize($gcg)));
-    
-    $all_lines = explode(PHP_EOL, $myfile_utf);
-
+    $all_lines = explode(PHP_EOL, $gcg);
     return array_slice($all_lines, 2);
 }
 
-$moves_fname = 'upload/gcg/' . $_GET['turniej'] . '_' . $_GET['runda'] . '_' . $_GET['p1'] . '_' . $_GET['p2'] . '.gcg';
-$mymoves = generateMovesTable($moves_fname);
-showBoard($mymoves);
+
+include 'config.php';
+$con = mysqli_connect($mysqlhost, $mysqluser, $mysqlpwd, $mysqldbname);
+$query = 'SELECT gcg FROM PFSTOURHH WHERE turniej = ' . $_GET['turniej'] . ' AND runda = ' . $_GET['runda'] . ' AND player1 = ' . $_GET['p1'] . ';';
+mysqli_set_charset($con, 'utf8');
+$result = mysqli_query($con, $query);
+if ($result) {
+    $gcgtext = mysqli_fetch_array($result)[0];
+    //$moves_fname = 'upload/gcg/' . $_GET['turniej'] . '_' . $_GET['runda'] . '_' . $_GET['p1'] . '_' . $_GET['p2'] . '.gcg';
+    $mymoves = generateMovesTable($gcgtext);
+    showBoard($mymoves, $gcgtext);
+    }
 ?>
 
 </body>
