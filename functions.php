@@ -35,7 +35,7 @@ function utf_convert($inp) {
     $in_chars[] = "\217";
     $out_chars[] = "Ź";
     $in_chars[] = "\237";
-    $out_chars[] = "Ź";
+    $out_chars[] = "ź";
     $in_chars[] = "\312";
     $out_chars[] = "Ę";
     $in_chars[] = "\352";
@@ -60,7 +60,13 @@ function utf_convert($inp) {
     $out_chars[] = "Ó";
     $in_chars[] = "\363";
     $out_chars[] = "ó";
-    $converted = str_replace($in_chars, $out_chars, $inp);
+
+    if ((mb_detect_encoding($myfile_utf, 'UTF-8', true) == 'UTF-8') === FALSE) {
+        $converted = str_replace($in_chars, $out_chars, $inp);
+    }
+    else {
+        $converted = $inp;
+    }
     return $converted;
 }
 
