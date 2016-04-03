@@ -2,6 +2,44 @@
 <head>
     <title>zapis</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="bootstrap-buttons.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+<script>
+
+$( document ).ready(function() {
+
+$('.upload').on('change', function(event) {
+    var file_data = $(event.target).prop('files')[0];
+    var form_data = new FormData();                  
+    form_data.append('file', file_data);
+    form_data.append('turniej', $(event.target).attr('data-turniej'));
+    form_data.append('runda', $(event.target).attr('data-runda'));
+    form_data.append('player1', $(event.target).attr('data-player1'));
+    form_data.append('player2', $(event.target).attr('data-player2'));
+    form_data.append('p1pts', $(event.target).attr('data-p1pts'));
+    form_data.append('p2pts', $(event.target).attr('data-p2pts'));
+    $.ajax({
+            url: 'upload.php', // point to server-side PHP script 
+     dataType: 'text',  // what to expect back from the PHP script, if anything
+     cache: false,
+     contentType: false,
+     processData: false,
+     data: form_data,                         
+     type: 'post',
+     success: function(php_script_response){
+         var response = $.parseJSON(php_script_response);
+         if ( response.status == 'error') {
+             alert( response.errormsg );
+         }
+         else {
+             alert('Zapis zaktualizowany.');
+             window.location.reload(true);
+         }
+     }
+     });
+});
+});
+</script>
     <style type="text/css">
         table.zapis { width: 243px; font-size: 9px;}
         table.zapis td.gracz{ font-size: 14px; font-weight: bold; text-align: center; padding: 10px 5px; }
@@ -18,14 +56,31 @@
 div#gcg {font-family:monospace;}
         span.blank{color: red;}
         #worek{ text-align: left;   margin: 0 10px 20px 10px;}
+.fileUpload {
+    position: relative;
+    overflow: hidden;
+    margin: 10px;
+}
+.fileUpload input.upload {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 0;
+    padding: 0;
+    font-size: 20px;
+    cursor: pointer;
+    opacity: 0;
+    filter: alpha(opacity=0);
+}
     </style>
 </head>
 <body>
 
 <?php
 
-mb_internal_encoding("UTF-8");
+include 'functions.php';
 
+mb_internal_encoding("UTF-8");
 error_reporting( E_ALL );
 
 function showBoard($moves, $gcgtext) {
@@ -131,6 +186,50 @@ fclose($myfile);
 
 $gcgprint .='</div>';
 print $gcgprint;
+
+
+session_start();
+if (!isset($_SESSION['user'])) {
+    $_SESSION['user']="";
+    $_SESSION['pass']="";
+}
+
+if (isset($_POST["user"])) {	
+    $_SESSION['user']=hash('sha256', $_POST['user']);
+    $_SESSION['pass']=hash('sha256', $_POST['pass']);
+}
+
+if($_SESSION['user'] == "436de63860c12db3e5c43dd39932e7fa83c406fd92dc2eb555637f9f94c4d616"
+	&& $_SESSION['pass'] == "33a3422fdb68d68e0887c62217c93b9de3b01752ecda9ea996b4105b169ccc36")
+	{
+        $gcgscores = getFinalScore(explode(PHP_EOL, $gcgtext));
+        if ($gcgscores != -1) {
+
+            echo '<div class="fileUpload btn btn-primary">';
+            echo '<span>Zaktualizuj</span>';
+            echo '<input type="file" class="upload" ';
+            echo ' data-turniej=' . $_GET['turniej'] . ' data-runda=';
+            echo $_GET['runda'] . " data-player1=" . $_GET['p1'] . " data-player2=" . $_GET['p2'];
+            echo " data-p1pts=" . $gcgscores['p1'] . " data-p2pts= " . $gcgscores['p2'];
+            echo ' /></div>';
+        }
+        else {
+            print_r($gcgscores);
+        }
+    }
+else {
+		?>
+    <br /><br />Zaloguj się, by aktualizować zapisy:
+                <form method="POST" action="">
+					login: <input type="text" name="user"><br/>
+					hasło: <input type="password" name="pass"><br/>
+					<input type="submit" name="submit" value="zaloguj">
+				</form>
+			</body>
+			</html>	
+		<?php
+}
+
   
 }
 

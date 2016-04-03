@@ -1,4 +1,26 @@
 <?php
+
+function getFinalScore($gcg) {
+
+    foreach(array_reverse($gcg) as $line) {
+        if (substr($line, 0, 1) == '>') {
+            $lsp = explode(' ', $line);
+           
+            if (!isset($playerA) && substr($lsp[2], 0, 1) == '(') {
+                $letters_value = intval(substr($lsp[3], 1)) / 2;
+                $playerA = array($lsp[0], intval(end($lsp))-$letters_value);
+            }
+            elseif (isset($playerA) && $lsp[0] != $playerA[0]) {
+                $playerB = array($lsp[0], intval(end($lsp))-$letters_value);
+                $out['p1'] = $playerA[1];
+                $out['p2'] = $playerB[1];
+                return $out;
+            }
+        }
+    }
+        return -1;
+}
+
 function utf_convert($inp) {
     $in_chars = $out_chars = array();
          
