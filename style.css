@@ -1,0 +1,98 @@
+table.zapis {
+    width: 243px;
+    font-size: 9px;
+}
+
+table.zapis td.gracz {
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    padding: 10px 5px;
+}
+
+table.zapis th, table.zapis td {
+    padding: 6px 2px;
+}
+
+table#plansza   {
+    margin: 5px;
+    text-align: center;
+    border-spacing:0px;
+}
+
+table#plansza td    {
+    width: 25px;
+    height: 25px;
+    line-height: 25px;
+    background:#3C8571;
+    border: 1px solid #23574B;
+}
+
+table#plansza th, table#plansza td:first-child  {
+    width: 20px;
+    height: 25px;
+    line-height: 25px;
+    background:#23574B;
+    border: 1px solid #23574B;
+    color:white;
+    font-weight: normal;
+    font-size:9px;
+}
+
+table#plansza td.word3    {
+    background: #DB3920;
+}
+
+table#plansza td.word2   {
+    background: #EFA284;
+}
+
+table#plansza td.letter3 {
+    background: #4194E0;
+}
+
+table#plansza td.letter2 {
+    background: #79B6E5;
+}
+table#plansza td.letter {
+    background: #fcfac4;
+}
+
+.bottomSpan {
+    bottom: 0;
+    right: 0;
+    position: relative;
+    right: 0;
+    font-size: 6px;
+}
+
+div#gcg {
+    font-family: monospace;
+}
+
+span.blank {
+    color: red;
+}
+
+#worek {
+    text-align: left;
+    margin: 0 10px 20px 10px;
+}
+
+.fileUpload {
+    position: relative;
+    overflow: hidden;
+    margin: 10px;
+}
+
+.fileUpload input.upload {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 0;
+    padding: 0;
+    font-size: 20px;
+    cursor: pointer;
+    opacity: 0;
+    filter: alpha(opacity=0);
+}
