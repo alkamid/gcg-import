@@ -14,49 +14,83 @@ table.zapis th, table.zapis td {
     padding: 6px 2px;
 }
 
-table#plansza   {
+div#board   {
     margin: 5px;
     text-align: center;
     border-spacing:0px;
 }
 
-table#plansza td    {
-    width: 25px;
-    height: 25px;
+div#board div.tile    {
+    width: 26.6px;
+    height: 26.6px;
     line-height: 25px;
     background:#3C8571;
     border: 1px solid #23574B;
+    float:left;
 }
 
-table#plansza th, table#plansza td:first-child  {
-    width: 20px;
-    height: 25px;
-    line-height: 25px;
+div#board div.boardrow {
+    clear: both;
+}
+
+div#board div.header div.tile {
     background:#23574B;
-    border: 1px solid #23574B;
     color:white;
-    font-weight: normal;
-    font-size:9px;
+    font-size: 9px;
 }
 
-table#plansza td.word3    {
+div#board div.header.tile {
+    background:#23574B;
+    color:white;
+    font-size: 9px;
+}
+
+div#board div.tile.blank {
+    color: #000; /* Fallback for older browsers */
+    color: rgba(0, 0, 0, 0.6);}
+}
+
+div#board div.boardrow div:first-child {
+    background:#23574B;
+}
+
+div#board div.boardrow div:last-child {
+    background:#23574B;
+}
+
+div#board div.boardrow div.tile div.points {
+    height: 8px;
+    width: 8px;
+    position:relative;
+    left: 17px;
+    bottom: 7px;
+    font-size: 6px;
+    text-align: center;
+    text-decoration:none;
+    line-height: 9px;
+    background: #fcfac4;
+
+}
+
+div#board div.word3    {
     background: #DB3920;
 }
 
-table#plansza td.word2   {
+div#board div.word2   {
     background: #EFA284;
 }
 
-table#plansza td.letter3 {
+div#board div.letter3 {
     background: #4194E0;
 }
 
-table#plansza td.letter2 {
+div#board div.letter2 {
     background: #79B6E5;
 }
-table#plansza td.letter {
+div#board div.letter {
     background: #fcfac4;
 }
+
 
 .bottomSpan {
     bottom: 0;
