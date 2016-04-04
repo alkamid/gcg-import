@@ -70,6 +70,41 @@ function showBoard($moves, $gcgtext) {
         }
     }
 
+    $letter_points = array(
+        'A' => 1,
+        'Ą' => 5,
+        'B' => 3,
+        'C' => 2,
+        'Ć' => 6,
+        'D' => 2,
+        'E' => 1,
+        'Ę' => 5,
+        'F' => 5,
+        'G' => 3,
+        'H' => 3,
+        'I' => 1,
+        'J' => 3,
+        'K' => 2,
+        'L' => 2,
+        'Ł' => 3,
+        'M' => 2,
+        'N' => 1,
+        'Ń' => 7,
+        'O' => 1,
+        'Ó' => 5,
+        'P' => 2,
+        'R' => 1,
+        'S' => 1,
+        'Ś' => 5,
+        'T' => 2,
+        'U' => 3,
+        'W' => 1,
+        'Y' => 2,
+        'Z' => 1,
+        'Ź' => 9,
+        'Ż' => 5,
+    );
+
     $length = count($moves);
     for ($k = 0; $k < $length; $k++) {
         $mv = explode(' ', $moves[$k]);
@@ -108,7 +143,7 @@ function showBoard($moves, $gcgtext) {
     }
     ?>
 
-    <div id="board">
+    <div id="board1">
     </table>
     <table id="plansza" class="onleft">
     <tr>
@@ -143,6 +178,47 @@ function showBoard($moves, $gcgtext) {
     }
 
     $output .= '</tr></table></div>';
+    print $output;
+
+    $output = '<div id="board">';
+
+    $output .= '<div class="boardrow header"><div class="tile"></div>';
+    for ($i = 1; $i < 16; ++$i) {
+        $output .= '<div class="tile">' . $i . '</div>';
+    }
+    $output .= '<div class="tile"></div></div>';
+
+    for ($row = 0; $row < 15; $row++) {
+        $output .= '<div class="boardrow">';
+        $output .= '<div class="tile header">' . chr(65 + $row) . '</div>';
+        #$output .= '<div class="tile"></div>';
+        for ($col = 0; $col < 15; $col++) {
+            
+            if ($board[$row][$col] !== 0) {
+                #$output .= '<div class="tile"></div>';
+                $output .= '<div class="tile letter">' . $board[$row][$col];
+                if (array_key_exists($board[$row][$col], $letter_points)) {
+                    $output .= '<div class="points">' . $letter_points[$board[$row][$col]] . '</div>';
+                }
+                $output .= '</div>';
+            }
+            else {
+                #$output .= '<div class="tile"></div>';
+                $output .= '<div class="tile ' . $board_bonuses[$row][$col] . '"></div>';
+            }
+        }
+        $output .= '<div class="tile"></div>';
+        $output .= '</div>';
+        //$output .= '<th>&nbsp;</th></tr>';
+    }
+
+    $output .= '<div class="boardrow header"><div class="tile"></div>';
+    for ($i = 1; $i < 16; ++$i) {
+        $output .= '<div class="tile"></div>';
+    }
+    $output .= '<div class="tile"></div></div>';
+
+    $output .= '</div>';
     print $output;
 
     print '[<a href="download.php?turniej=' . $_GET['turniej'] . '&runda=' . $_GET['runda'] . '&p1=' . $_GET['p1'] . '">ściągnij zapis</a>]<br /><br />';
