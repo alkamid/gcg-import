@@ -144,42 +144,10 @@ function showBoard($moves, $gcgtext) {
     ?>
 
     <div id="board1">
-    </table>
-    <table id="plansza" class="onleft">
-    <tr>
-    <th>&nbsp;</th>
-
-    <?php
-    for ($i = 1; $i < 16; ++$i) {
-        print "<th>$i</th>";
-    }
-
-    print '<th>&nbsp;</th></tr>';
-
-    for ($row = 0; $row < 15; $row++) {
-        $output .= '<tr><td class="aligncenter">' . chr(65 + $row) . '</td>';
-
-        for ($col = 0; $col < 15; $col++) {
-            
-            if ($board[$row][$col] !== 0) {
-                $output .= '<td class="letter">' . $board[$row][$col] . '</td>';
-            }
-            else {
-                $output .= '<td class="' . $board_bonuses[$row][$col] . '"></td>';
-            }
-        }
-        $output .= '<th>&nbsp;</th></tr>';
-    }
     
-    $output .= '<tr>';
-
-    for ($i = 0; $i < 17; $i++) {
-        $output .= '<th>&nbsp;</th>';
-    }
-
-    $output .= '</tr></table></div>';
-    print $output;
-
+    <?php
+    
+    #Board rendering and CSS based on a script by Weronika Rudnicka (korsarka)
     $output = '<div id="board">';
 
     $output .= '<div class="boardrow header"><div class="tile"></div>';
@@ -191,25 +159,25 @@ function showBoard($moves, $gcgtext) {
     for ($row = 0; $row < 15; $row++) {
         $output .= '<div class="boardrow">';
         $output .= '<div class="tile header">' . chr(65 + $row) . '</div>';
-        #$output .= '<div class="tile"></div>';
         for ($col = 0; $col < 15; $col++) {
             
             if ($board[$row][$col] !== 0) {
-                #$output .= '<div class="tile"></div>';
-                $output .= '<div class="tile letter">' . $board[$row][$col];
+                $output .= '<div class="tile letter';
+                if (mb_strtolower($board[$row][$col]) == $board[$row][$col]) {
+                    $output .= ' blank';
+                }
+                $output .= '">' . mb_strtoupper($board[$row][$col]);
                 if (array_key_exists($board[$row][$col], $letter_points)) {
                     $output .= '<div class="points">' . $letter_points[$board[$row][$col]] . '</div>';
                 }
                 $output .= '</div>';
             }
             else {
-                #$output .= '<div class="tile"></div>';
                 $output .= '<div class="tile ' . $board_bonuses[$row][$col] . '"></div>';
             }
         }
         $output .= '<div class="tile"></div>';
         $output .= '</div>';
-        //$output .= '<th>&nbsp;</th></tr>';
     }
 
     $output .= '<div class="boardrow header"><div class="tile"></div>';
@@ -239,8 +207,8 @@ function showBoard($moves, $gcgtext) {
         $_SESSION['pass']=hash('sha256', $_POST['pass']);
     }
     
-    if($_SESSION['user'] == "436de63860c12db3e5c43dd39932e7fa83c406fd92dc2eb555637f9f94c4d616"
-       && $_SESSION['pass'] == "33a3422fdb68d68e0887c62217c93b9de3b01752ecda9ea996b4105b169ccc36")
+    if($_SESSION['user'] == $uploaduser
+       && $_SESSION['pass'] == $uploadpass)
 	{
         $gcgscores = getFinalScore(explode(PHP_EOL, $gcgtext));
         if ($gcgscores != -1) {
