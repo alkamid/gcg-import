@@ -37,35 +37,27 @@ th {text-align: left;}
 <body>
 
 <?php
-error_reporting(E_ALL);
 $q = intval($_GET['q']);
 
-include "config.php";
-   
-$con = mysqli_connect($mysqlhost,$mysqluser, $mysqlpwd, $mysqldbname);
+require_once "../system.php";
+db_open();
 
-if (!$con) {
-    die('Could not connect: ' . mysqli_error($con));
-}
+$sql="SELECT H.turniej, T.name, H.runda, H.result1, P.name_show, H.player2, H.result2, H.host, G.round
+      FROM ".TBL_TOURHH." AS H
+      JOIN ".TBL_TOURS." AS T
+      ON H.turniej=T.id
+      JOIN ".TBL_PLAYER." AS P
+      ON H.player2 = P.id
+	  LEFT JOIN ".TBL_GCG." AS G
+	  ON G.tour=T.id AND G.round=H.runda AND (G.player1=H.player1 OR G.player1=H.player2)
+      WHERE H.player1='".$q."'
+      ORDER BY T.name, H.runda";
 
-mysqli_query($con, "SET NAMES 'utf8'");
+$result = db_query($sql);
 
-mysqli_set_charset('utf8', $con);
-
-$sql="SELECT PFSTOURHH.turniej, PFSTOURHH.gcg, PFSTOURS.name, PFSTOURHH.runda, PFSTOURHH.result1, PFSPLAYER.name_show, PFSTOURHH.player2, PFSTOURHH.result2, PFSTOURHH.host
-      FROM PFSTOURHH
-      JOIN PFSTOURS
-      ON PFSTOURHH.turniej=PFSTOURS.id
-      JOIN PFSPLAYER
-      ON PFSTOURHH.player2 = PFSPLAYER.id
-      WHERE player1 = '".$q."'
-      ORDER BY PFSTOURS.name, PFSTOURHH.runda";
-
-$result = mysqli_query($con,$sql);
-
-$sql_singleuser = "SELECT name_show FROM PFSPLAYER WHERE id = '" .$q."';";
-$result_singleuser = mysqli_query($con, $sql_singleuser);
-$user = mysqli_fetch_array($result_singleuser);
+$sql_singleuser = "SELECT name_show FROM ".TBL_PLAYER." WHERE id = '" .$q."';";
+$result_singleuser = db_query($sql_singleuser);
+$user = db_fetch_assoc($result_singleuser);
 echo "<table>
 <tr>
 <th>Turniej</th>
@@ -78,34 +70,34 @@ echo "<table>
 </tr>";
 
 $i = 0;
-while($row = mysqli_fetch_array($result)) {
+if ($result)
+while($row = db_fetch_assoc($result)) {
     echo "<tr>";
-    echo "<td>" . $row['name'] . "</td>";
-    echo "<td>" . $row['runda'] . "</td>";
-    if ($row['host'] == 1) {
+    echo "<td>".$row['name']."</td>";
+    echo "<td>".$row['runda']."</td>";
+    if ($row['host']==null || $row['host'] == 1) {
         $order = array($user['name_show'], $q, $row['name_show'], $row['player2'], $row['result1'], $row['result2']);
-    }
-    else {
+    } else {
         $order = array($row['name_show'], $row['player2'], $user['name_show'], $q, $row['result2'], $row['result1']);
     }
-    echo "<td>" . $order[0] . "</td>";
-    echo "<td>" . $order[2] . "</td>";
-    echo "<td>" . $order[4] . "</td>";
-    echo "<td>" . $order[5] . "</td>";
+    echo "<td>".$order[0]."</td>";
+    echo "<td>".$order[2]."</td>";
+    echo "<td>".$order[4]."</td>";
+    echo "<td>".$order[5]."</td>";
     echo "<td>";
 
-    $temp_fname = $row['turniej'] . '_' . $row['runda'] . '_' . $order[1] . '_' . $order[3] . '.gcg';
+    $temp_fname = $row['turniej'].'_'.$row['runda'].'_'.$order[1].'_'.$order[3].'.gcg';
     
-    if (strlen($row['gcg']) > 30) {
-        echo '<a href=board.php?turniej=' . $row['turniej'] . '&runda=' .$row['runda'] . '&p1=' . $order[1] . '&p2=' . $order[3] . '>[zapis]</a> ';
+    if ($row['round']!=null) {
+        echo '<a href=board.php?turniej='.$row['turniej'].'&runda=' .$row['runda'].'&p1='.$order[1].'&p2='.$order[3].'>[zapis]</a> ';
     }
     else {
         echo '<div class="fileUpload btn btn-primary">';
         echo '<span>Dodaj</span>';
         echo '<input type="file" class="upload" ';
-        echo 'data-index=' . $i . ' data-turniej=' . $row['turniej'] . ' data-runda=';
-        echo $row['runda'] . " data-player1=" . $order[1] . " data-player2=" . $order[3];
-        echo " data-p1pts=" . $order[4] . " data-p2pts= " . $order[5];
+        echo 'data-index='.$i.' data-turniej='.$row['turniej'].' data-runda=';
+        echo $row['runda']." data-player1=".$order[1]." data-player2=".$order[3];
+        echo " data-p1pts=".$order[4]." data-p2pts= ".$order[5];
         echo ' /></div>';
     }
     echo '</td>';
@@ -113,7 +105,7 @@ while($row = mysqli_fetch_array($result)) {
     $i += 1;
 }
 echo "</table>";
-mysqli_close($con);
+db_close();
 ?>
 </body>
 </html>

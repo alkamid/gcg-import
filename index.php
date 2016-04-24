@@ -1,7 +1,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+<link rel="stylesheet" type="text/css" href="bootstrap.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 <script>
 function showUser(str) {
@@ -22,6 +22,7 @@ function showUser(str) {
                 //http://stackoverflow.com/questions/23980733/jquery-ajax-file-upload-php
                 //http://stackoverflow.com/a/21061777/2261298
                 $('.upload').on('change', function(event) {
+                    var index = $(event.target).attr('data-index');
                     var file_data = $(event.target).prop('files')[0];
                     //console.log(file_data);
                     var form_data = new FormData();                  
@@ -41,11 +42,14 @@ function showUser(str) {
                      data: form_data,                         
                      type: 'post',
                      success: function(php_script_response){
+                         console.log(php_script_response);
                          var response = $.parseJSON(php_script_response);
                          if ( response.status == 'error') {
                              alert( response.errormsg );
                          }
                          else {
+                             console.log(response);
+                             var temp_fname = $(event.target).attr('data-turniej') + '_' + $(event.target).attr('data-runda') + '_' + $(event.target).attr('data-player1') + '_' + $(event.target).attr('data-player2') + '.gcg';
                              var board_link = '<a href=board.php?turniej=' + $(event.target).attr('data-turniej') + '&runda=' + $(event.target).attr('data-runda') + '&p1=' + $(event.target).attr('data-player1') + '&p2=' + $(event.target).attr('data-player2') + '>';
 
                              $(event.target).closest('td').prepend(board_link + '[zapis]</a> ');
@@ -71,22 +75,17 @@ function showUser(str) {
   <option value="">Zawodnik:</option>
 <?php
 
-include 'config.php';
+require_once "../system.php";
+db_open();
 
-$con = mysqli_connect($mysqlhost,$mysqluser, $mysqlpwd, $mysqldbname);
-if (!$con) {
-    die('Could not connect: ' . mysqli_error($con));
-}
-//this is a temporary fix, people have said I shouldn't be using SET NAMES
-mysqli_query($con, "SET NAMES 'utf8'");
-mysqli_set_charset('utf8', $con);
 
-$sql="SELECT id, name_alph FROM PFSPLAYER ORDER BY name_alph";
-$result = mysqli_query($con,$sql);
+$sql="SELECT id, name_alph FROM ".TBL_PLAYER." WHERE utype!='L' ORDER BY name_alph";
+$result = db_query($sql);
 
-while($row = mysqli_fetch_array($result)) {
+while($row = db_fetch_assoc($result)) {
     echo "<option value='". $row['id'] . "'>" . $row['name_alph'] . "</option>";
 }
+db_close();
 ?>
 
 </select>

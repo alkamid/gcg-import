@@ -1,26 +1,4 @@
 <?php
-
-function getFinalScore($gcg) {
-
-    foreach(array_reverse($gcg) as $line) {
-        if (substr($line, 0, 1) == '>') {
-            $lsp = explode(' ', $line);
-           
-            if (!isset($playerA) && substr($lsp[2], 0, 1) == '(') {
-                $letters_value = intval(substr($lsp[3], 1)) / 2;
-                $playerA = array($lsp[0], intval(end($lsp))-$letters_value);
-            }
-            elseif (isset($playerA) && $lsp[0] != $playerA[0]) {
-                $playerB = array($lsp[0], intval(end($lsp))-$letters_value);
-                $out['p1'] = $playerA[1];
-                $out['p2'] = $playerB[1];
-                return $out;
-            }
-        }
-    }
-        return -1;
-}
-
 function utf_convert($inp) {
     $in_chars = $out_chars = array();
          
@@ -35,7 +13,7 @@ function utf_convert($inp) {
     $in_chars[] = "\217";
     $out_chars[] = "Ź";
     $in_chars[] = "\237";
-    $out_chars[] = "ź";
+    $out_chars[] = "Ź";
     $in_chars[] = "\312";
     $out_chars[] = "Ę";
     $in_chars[] = "\352";
@@ -60,13 +38,7 @@ function utf_convert($inp) {
     $out_chars[] = "Ó";
     $in_chars[] = "\363";
     $out_chars[] = "ó";
-
-    if ((mb_detect_encoding($myfile_utf, 'UTF-8', true) == 'UTF-8') === FALSE) {
-        $converted = str_replace($in_chars, $out_chars, $inp);
-    }
-    else {
-        $converted = $inp;
-    }
+    $converted = str_replace($in_chars, $out_chars, $inp);
     return $converted;
 }
 
