@@ -153,13 +153,13 @@ function showBoard($moves, $gcgtext) {
 
     $output .= '<div class="boardrow header"><div class="tile"></div>';
     for ($i = 1; $i < 16; ++$i) {
-        $output .= '<div class="tile">' . $i . '</div>';
+        $output .= '<div class="tile">' . chr(64+$i) . '</div>';
     }
     $output .= '<div class="tile"></div></div>';
 
     for ($row = 0; $row < 15; $row++) {
         $output .= '<div class="boardrow">';
-        $output .= '<div class="tile header">' . chr(65 + $row) . '</div>';
+        $output .= '<div class="tile header">' . ($row+1) . '</div>';
         for ($col = 0; $col < 15; $col++) {
             
             if ($board[$row][$col] !== 0) {
