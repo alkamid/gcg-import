@@ -1,15 +1,21 @@
 <?php
 header('Content-type: text/plain');
 header('Content-Disposition: attachment; filename="zapis.gcg"');
-include 'config.php';
-mb_internal_encoding("UTF-8");
-$con = mysqli_connect($mysqlhost,$mysqluser, $mysqlpwd, $mysqldbname);
-$query = 'SELECT gcg FROM PFSTOURHH WHERE turniej = ' . $_GET['turniej'] . ' AND runda = ' . $_GET['runda'] . ' AND player1 = ' . $_GET['p1'] . ';';
-mysqli_set_charset($con, 'utf8');
-$result = mysqli_query($con, $query);
+
+require_once "../system.php";
+db_open();
+
+$player1=$_GET['p1'];
+if ($player1>$_GET['p2']) {
+	$player1=$_GET['p2'];
+}
+
+$query = "SELECT data FROM ".TBL_GCG." WHERE tour=".$_GET['turniej']." AND round=".$_GET['runda']." AND player1=".$player1.';';
+
+$result = db_query($query);
 
 if ($result) {
-    $gcgtext = mysqli_fetch_array($result)[0];
-    print $gcgtext;
+    $gcgtext = db_fetch_row($result)[0];
+    echo $gcgtext;
 }
 ?>
