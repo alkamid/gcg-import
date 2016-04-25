@@ -18,10 +18,12 @@ function showUser(str) {
         }
         xmlhttp.onreadystatechange = function() {
             if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+
                 document.getElementById("txtHint").innerHTML = xmlhttp.responseText;
                 //http://stackoverflow.com/questions/23980733/jquery-ajax-file-upload-php
                 //http://stackoverflow.com/a/21061777/2261298
                 $('.upload').on('change', function(event) {
+
                     var index = $(event.target).attr('data-index');
                     var file_data = $(event.target).prop('files')[0];
                     //console.log(file_data);
@@ -34,15 +36,15 @@ function showUser(str) {
                     form_data.append('p1pts', $(event.target).attr('data-p1pts'));
                     form_data.append('p2pts', $(event.target).attr('data-p2pts'));
                     $.ajax({
-                            url: 'upload.php', // point to server-side PHP script 
+                       
+                     url: 'upload.php', // point to server-side PHP script 
                      dataType: 'text',  // what to expect back from the PHP script, if anything
                      cache: false,
                      contentType: false,
                      processData: false,
-                     data: form_data,                         
+                     data: form_data,
                      type: 'post',
                      success: function(php_script_response){
-                         console.log(php_script_response);
                          var response = $.parseJSON(php_script_response);
                          if ( response.status == 'error') {
                              alert( response.errormsg );

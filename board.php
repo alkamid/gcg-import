@@ -207,6 +207,8 @@ function showBoard($moves, $gcgtext) {
         $_SESSION['pass']=hash('sha256', $_POST['pass']);
     }
     
+    include_once 'credentials.php';
+
     if($_SESSION['user'] == $uploaduser
        && $_SESSION['pass'] == $uploadpass)
 	{
@@ -241,8 +243,6 @@ function generateMovesTable($gcg) {
     $all_lines = explode(PHP_EOL, $gcg);
     return array_slice($all_lines, 2);
 }
-
-include 'config.php';
 
 $player1=$_GET['p1'];
 if ($player1>$_GET['p2']) {
