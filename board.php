@@ -46,7 +46,7 @@ $( document ).ready(function() {
 <?php
 
 session_start();
-include 'functions.php';
+require_once 'functions.php';
 mb_internal_encoding("UTF-8");
 
 function showBoard($moves, $gcgtext) {
