@@ -3,11 +3,11 @@
 include "functions.php";
 
 function validateGCG($gcg_file, $p1, $p2) {
-    $gcg = file($gcg_file, FILE_IGNORE_NEW_LINES);
+    $gcg = file_get_contents($gcg_file);
     $gcgscores = getFinalScore($gcg);
     
     if ($gcgscores === -1) {
-        return array(FALSE, 'Nie znaleziono wyniku — prawdopodobnie nieprawidłowy plik .gcg');
+        return array(FALSE, 'Nie znaleziono wyniku — prawdopodobnie nieprawidłowy plik .gcg' . $p1 . $p2);
     }
     else {
         if (($gcgscores['p1'] == $p1 && $gcgscores['p2'] == $p2) || ($gcgscores['p1'] == $p2 && $gcgscores['p2'] == $p1)) {
@@ -48,9 +48,19 @@ $validation = validateGCG($_FILES['file']['tmp_name'], $_POST['p1pts'], $_POST['
 		} else {
 			$play1 = $_POST['player2'];
 		}
+
+        if ($_POST['update'] == 1) {
+            $query = "SELECT data FROM ".TBL_GCG." WHERE tour=".$_POST['turniej']." AND round=".$_POST['runda']." AND player1=".$play1.';';
+            $result = db_query($query);
+            if ($result) {
+                $oldgcgtext = db_fetch_row($result)[0];
+            }
+            $myfile_utf = mergeGCG($myfile_utf, $oldgcgtext);
+        }
         $query1 = "INSERT INTO ".TBL_GCG." (tour,round,player1,data)"
 			." VALUES (".$_POST['turniej'].",".$_POST['runda'].",".$play1
-			.",'".mysql_real_escape_string($myfile_utf)."')";
+			.",'".mysql_real_escape_string($myfile_utf)."')"
+            ." ON DUPLICATE KEY UPDATE data='".mysql_real_escape_string($myfile_utf)."'";
         
         if (db_query($query1)) {
             $response_array['status'] = 'success';

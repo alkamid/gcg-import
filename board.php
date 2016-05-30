@@ -18,6 +18,7 @@ $( document ).ready(function() {
         form_data.append('player2', $(event.target).attr('data-player2'));
         form_data.append('p1pts', $(event.target).attr('data-p1pts'));
         form_data.append('p2pts', $(event.target).attr('data-p2pts'));
+        form_data.append('update', 1);
         $.ajax({
          url: 'upload.php',
          dataType: 'text',
@@ -27,6 +28,7 @@ $( document ).ready(function() {
          data: form_data,                         
          type: 'post',
          success: function(php_script_response){
+             console.log(php_script_response);
              var response = $.parseJSON(php_script_response);
              if ( response.status == 'error') {
                  alert( response.errormsg );
@@ -148,7 +150,7 @@ function showBoard($moves, $gcgtext) {
     
     <?php
     
-    #Board rendering and CSS based on a script by Weronika Rudnicka (korsarka)
+    #Board rendering and CSS based on a script by Weronika Rudnicka (ustczanka)
     $output = '<div id="board">';
 
     $output .= '<div class="boardrow header"><div class="tile"></div>';
@@ -194,6 +196,7 @@ function showBoard($moves, $gcgtext) {
 
     $gcgprint = '<div id="gcg">';
     $gcgprint .= nl2br($gcgtext);
+
     $gcgprint .='</div>';
     print $gcgprint;
 
@@ -212,7 +215,7 @@ function showBoard($moves, $gcgtext) {
     if($_SESSION['user'] == $uploaduser
        && $_SESSION['pass'] == $uploadpass)
 	{
-        $gcgscores = getFinalScore(explode(PHP_EOL, $gcgtext));
+        $gcgscores = getFinalScore($gcgtext);
         if ($gcgscores != -1) {
             
             echo '<div class="fileUpload btn btn-primary">';
@@ -240,7 +243,7 @@ function showBoard($moves, $gcgtext) {
 }
 
 function generateMovesTable($gcg) {
-    $all_lines = explode(PHP_EOL, $gcg);
+    $all_lines = preg_split("/\\r\\n|\\r|\\n/", $gcg);
     return array_slice($all_lines, 2);
 }
 

@@ -35,6 +35,7 @@ function showUser(str) {
                     form_data.append('player2', $(event.target).attr('data-player2'));
                     form_data.append('p1pts', $(event.target).attr('data-p1pts'));
                     form_data.append('p2pts', $(event.target).attr('data-p2pts'));
+                    form_data.append('update', 0);
                     $.ajax({
                        
                      url: 'upload.php', // point to server-side PHP script 
