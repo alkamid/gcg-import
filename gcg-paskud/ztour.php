@@ -1,4 +1,4 @@
-<?php require_once("head0.php");?>
+<?php require_once("../head0.php");?>
 <?php
 
 $id=intval($_GET['p']);
@@ -9,7 +9,7 @@ if (isset($_GET['s'])) {
 	$sort = 1;
 }
 
-require_once("tablefun.php");
+require_once("../tablefun.php");
 
 $dTableArr = new DispTableArr("ztour_".$tid."_".$id, 2, array(
 new DispTable(),
@@ -17,10 +17,10 @@ new DispTable(false, $sort)
 ));
 
 if (!$dTableArr->load()) {
-	require_once("system.php");
-	require_once("queries.php");
+	require_once("../system.php");
+	require_once("../queries.php");
 	$arrheads=array(
-		"<th width=\"5%\">#1#Runda#2#",	
+		"<th width=\"2%\">#1#Runda#2#",	
 		"<th width=\"5%\">#1#Stół#2#");
 	if (SHOWHOST) $arrheads[]="<th width=\"1%\">*";
 	$arrheads[]="<th width=\"1%\">+";
@@ -30,6 +30,7 @@ if (!$dTableArr->load()) {
 	$arrheads[]="<th width=\"10%\">#1#Straconych#2#";
 	$arrheads[]="<th width=\"10%\">#1#Suma małych#2#";
 	$arrheads[]="<th width=\"5%\">#1#Skalp#2#";
+	$arrheads[]="<th width=\"3%\">Zapis";
 	$arrtypes=array('i','i');
 	if (SHOWHOST) $arrtypes[]='s';
 	$arrtypes[]='s';
@@ -39,6 +40,7 @@ if (!$dTableArr->load()) {
 	$arrtypes[]='i';
 	$arrtypes[]='i';
 	$arrtypes[]='i';
+	$arrtypes[]='s';
 	$arrsort=array(1,2);
 	if (SHOWHOST) $arrsort[]=0;
 	$arrsort[]=0;
@@ -48,6 +50,7 @@ if (!$dTableArr->load()) {
 	$arrsort[]=-7;
 	$arrsort[]=-8;
 	$arrsort[]=-9;
+	$arrsort[]=0;
 	$arrtit=array(false,"Nr stołu, na którym rozgrywano grę");
 	if (SHOWHOST) $arrtit[]=false;
 	$arrtit[]=false;
@@ -57,6 +60,7 @@ if (!$dTableArr->load()) {
 	$arrtit[]="Małych punktów przeciwnika";
 	$arrtit[]="Suma małych gracza i przeciwnika";
 	$arrtit[]="Zdobyty skalp";
+	$arrtit[]=false;
 	$dTableArr->aDispTable[1]->setHeads($arrheads);
 	$dTableArr->aDispTable[1]->setTypes($arrtypes);
 	$dTableArr->aDispTable[1]->setDefaultSort($arrsort);
