@@ -18,6 +18,7 @@ div#board   {
     margin: 5px;
     text-align: center;
     border-spacing:0px;
+    float: left;
 }
 
 div#board div.tile    {
