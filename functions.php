@@ -1,5 +1,21 @@
 <?php
 
+function uploadButton($tour_id, $round, $p1, $p2, $p1pts, $p2pts) {
+
+    $uplbutton = '<div class="fileUpload btn btn-primary">
+            <span>Dodaj</span>
+            <input type="file" class="upload" 
+            data-turniej=' . $tour_id .
+            ' data-runda=' . $round .
+            ' data-player1=' . $p1 .
+            ' data-player2=' . $p2 .
+            ' data-p1pts=' . $p1pts .
+            ' data-p2pts= ' . $p2pts .
+            ' /></div>';
+    return $uplbutton;
+
+}
+
 function getFinalScore($gcgtext) {
     $gcg = preg_split("/\\r\\n|\\r|\\n/", $gcgtext);
 
