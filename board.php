@@ -145,8 +145,6 @@ function showBoard($moves, $gcgtext) {
 
     }
     ?>
-
-    <div id="board1">
     
     <?php
     
@@ -192,13 +190,14 @@ function showBoard($moves, $gcgtext) {
     $output .= '</div>';
     print $output;
 
-    print '[<a href="download.php?turniej=' . $_GET['turniej'] . '&runda=' . $_GET['runda'] . '&p1=' . $_GET['p1'] . '&p2=' . $_GET['p2'] . '">ściągnij zapis</a>]<br /><br />';
 
     $gcgprint = '<div id="gcg">';
     $gcgprint .= nl2br($gcgtext);
 
     $gcgprint .='</div>';
     print $gcgprint;
+
+    print '[<a href="download.php?turniej=' . $_GET['turniej'] . '&runda=' . $_GET['runda'] . '&p1=' . $_GET['p1'] . '&p2=' . $_GET['p2'] . '">ściągnij zapis</a>]<br /><br />';
 
     if (!isset($_SESSION['user'])) {
         $_SESSION['user']="";
