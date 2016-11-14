@@ -1,3 +1,7 @@
+body{
+color:#000000;
+background-color:#c9f498
+}
 table.zapis {
     width: 243px;
     font-size: 9px;
@@ -18,7 +22,7 @@ div#board   {
     margin: 5px;
     text-align: center;
     border-spacing:0px;
-    float: left;
+	float:left;
 }
 
 div#board div.tile    {

@@ -3,7 +3,7 @@
 function uploadButton($tour_id, $round, $p1, $p2, $p1pts, $p2pts) {
 
     $uplbutton = '<div class="fileUpload btn btn-primary">
-            <span>Dodaj</span>
+            <span>[+]</span>
             <input type="file" class="upload" 
             data-turniej=' . $tour_id .
             ' data-runda=' . $round .
