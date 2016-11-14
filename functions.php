@@ -16,6 +16,22 @@ function uploadButton($tour_id, $round, $p1, $p2, $p1pts, $p2pts) {
 
 }
 
+function checkMovesEncoding($gcgtext) {
+    $gcg = preg_split("/\\r\\n|\\r|\\n/", $gcgtext);
+
+    foreach($gcg as $line) {
+        if (substr($line, 0, 1) == '>') {
+            $lsp = explode(' ', $line);
+
+            if (strpos($lsp[3], "?") !== false) {
+                return -1;
+            }
+        }
+    }
+    return 0;
+}
+
+
 function getFinalScore($gcgtext) {
     $gcg = preg_split("/\\r\\n|\\r|\\n/", $gcgtext);
 

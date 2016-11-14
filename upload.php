@@ -5,6 +5,11 @@ include "functions.php";
 function validateGCG($gcg_file, $p1, $p2) {
     $gcg = file_get_contents($gcg_file);
     $gcgscores = getFinalScore($gcg);
+    $encoding_issues = checkMovesEncoding($gcg);
+    
+    if ($encoding_issues == -1) {
+        return array(FALSE, 'Nieprawidłowe kodowanie pliku — sprawdź czy zapis nie zawiera znaków zapytania');
+            }
     
     if ($gcgscores === -1) {
         return array(FALSE, 'Nie znaleziono wyniku — prawdopodobnie nieprawidłowy plik .gcg' . $p1 . $p2);
