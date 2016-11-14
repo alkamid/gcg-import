@@ -18,11 +18,15 @@ table.zapis th, table.zapis td {
     padding: 6px 2px;
 }
 
+div#left {
+    float:left;
+    height:100%;
+}
+
 div#board   {
     margin: 5px;
     text-align: center;
     border-spacing:0px;
-	float:left;
 }
 
 div#board div.tile    {
