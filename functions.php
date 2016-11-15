@@ -16,6 +16,60 @@ function uploadButton($tour_id, $round, $p1, $p2, $p1pts, $p2pts) {
 
 }
 
+function gcgToTable($gcgtext) {
+    $gcg = preg_split("/\\r\\n|\\r|\\n/", $gcgtext);
+
+    $table = "<table class='gcg'>";
+    foreach($gcg as $line) {
+        $table .= "<tr>";
+        if (substr($line, 0, 1) == '>') {
+
+            $lsp = explode(' ', $line);
+
+            if (!isset($playerA)) {
+                $playerA = substr($lsp[0], 1, -1);
+            }
+            elseif (!isset($playerB)) {
+                $newplayer = substr($lsp[0], 1, -1);
+                if ($newplayer !== $playerA) {
+                    $playerB = $newplayer;
+                }
+            }
+
+            $table .= "<td>" . substr($lsp[0], 1) . "</td>";
+
+            $rack = $lsp[1];
+            $pos = $lsp[2];
+            $move = $lsp[3];
+            $pts = $lsp[4];
+            $sum = $lsp[5];
+
+            if (substr($lsp[2], 0, 1) == '-') {
+                $pos = '';
+                $move = 'wym. ' . substr($lsp[2], 1);
+                $pts = $lsp[3];
+                $sum = $lsp[4];
+            }
+            elseif (substr($lsp[2], 0, 1) == '(') {
+                $rack = $lsp[2];
+                $pos = '';
+                $move = '';
+                $pts = $lsp[3];
+                $sum = $lsp[4];
+            }
+
+            $table .= "<td style='width:6em'>" . $rack . "</td>";
+            $table .= "<td style='width:2.5em'>" . $pos . "</td>";
+            $table .= "<td>" . $move . "</td>";
+            $table .= "<td style='width:2.5em; text-align:right'>" . $pts . "</td>";
+            $table .= "<td style='text-align:right'>" . $sum . "</td>";
+            }
+        $table .= "</tr>";
+    }
+    $table .= "</table>";
+    return $table;
+}
+
 function checkMovesEncoding($gcgtext) {
     $gcg = preg_split("/\\r\\n|\\r|\\n/", $gcgtext);
 

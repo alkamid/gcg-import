@@ -239,7 +239,7 @@ function showBoard($moves, $gcgtext) {
 
 
     $gcgprint = '<div id="gcg">';
-    $gcgprint .= nl2br($gcgtext);
+    $gcgprint .= gcgToTable($gcgtext);
 
     $gcgprint .='</div>';
     print $gcgprint;
