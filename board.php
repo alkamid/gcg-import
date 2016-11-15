@@ -149,7 +149,8 @@ function showBoard($moves, $gcgtext) {
     <?php
     
     #Board rendering and CSS based on a script by Weronika Rudnicka (ustczanka)
-    $output = '<div id="board">';
+    $output = '<div id="left">';
+    $output .= '<div id="board">';
 
     $output .= '<div class="boardrow header"><div class="tile"></div>';
     for ($i = 1; $i < 16; ++$i) {
@@ -188,14 +189,8 @@ function showBoard($moves, $gcgtext) {
     $output .= '<div class="tile"></div></div>';
 
     $output .= '</div>';
+    
     print $output;
-
-
-    $gcgprint = '<div id="gcg">';
-    $gcgprint .= nl2br($gcgtext);
-
-    $gcgprint .='</div>';
-    print $gcgprint;
 
     print '[<a href="download.php?turniej=' . $_GET['turniej'] . '&runda=' . $_GET['runda'] . '&p1=' . $_GET['p1'] . '&p2=' . $_GET['p2'] . '">ściągnij zapis</a>]<br /><br />';
 
@@ -217,7 +212,7 @@ function showBoard($moves, $gcgtext) {
         $gcgscores = getFinalScore($gcgtext);
         if ($gcgscores != -1) {
             
-            echo '<div class="fileUpload btn btn-primary">';
+            echo '<div class="fileUpload btn">';
             echo '<span>Zaktualizuj</span>';
             echo '<input type="file" class="upload" ';
             echo ' data-turniej=' . $_GET['turniej'] . ' data-runda=';
@@ -239,6 +234,16 @@ function showBoard($moves, $gcgtext) {
         </form>
         <?php
     }
+
+    print '</div>';
+
+
+    $gcgprint = '<div id="gcg">';
+    $gcgprint .= nl2br($gcgtext);
+
+    $gcgprint .='</div>';
+    print $gcgprint;
+
 }
 
 function generateMovesTable($gcg) {

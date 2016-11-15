@@ -7,7 +7,7 @@
 /*! normalize.css v3.0.2 | MIT License | git.io/normalize */
 .btn {
   display: inline-block;
-  padding: 6px 12px;
+  padding: 0 0;
   margin-bottom: 0;
   font-weight: normal;
   text-align: center;
@@ -24,6 +24,7 @@
   border: 1px solid transparent;
   border-radius: 4px;
 }
+
 .btn:focus,
 .btn:active:focus,
 .btn.active:focus,
@@ -104,7 +105,7 @@ fieldset[disabled] .btn-default.active {
 }
 .btn-primary {
   color: #000;
-  background-color: #FF977C;
+  background-color: #c9f498;
   border-color: #c9f498;
 }
 .btn-primary:hover,
