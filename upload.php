@@ -6,7 +6,10 @@ function validateGCG($gcg_file, $p1, $p2) {
     $gcg = file_get_contents($gcg_file);
     $gcgscores = getFinalScore($gcg);
     $encoding_issues = checkMovesEncoding($gcg);
-    
+
+    if (checkPlayers($gcg_file) === false) {
+        return array(FALSE, 'Nieprawidłowy plik .gcg — sprawdź nazwy graczy w nagłówku i przy ruchach');
+    }
     if ($encoding_issues == -1) {
         return array(FALSE, 'Nieprawidłowe kodowanie pliku — sprawdź czy zapis nie zawiera znaków zapytania');
             }

@@ -1,5 +1,28 @@
 <?php
 
+function checkPlayers($gcgtext) {
+    $gcg = preg_split("/\\r\\n|\\r|\\n/", $gcgtext);
+    
+    foreach ($gcg as $i => $line) {
+        $lsp = explode(' ', $line);
+        
+        if ($i === 0) {
+            $p1 = $lsp[1];
+        }
+        elseif ($i === 1) {
+            $p2 = $lsp[1];
+        }
+
+        elseif (substr($line, 0, 1) === '>') {
+            $current_player = substr($lsp[0], 1, -1);
+            if ($current_player !== $p1 && $current_player !== $p2) {
+                return false;
+            }
+        }
+    }
+    return false;
+}
+
 function uploadButton($tour_id, $round, $p1, $p2, $p1pts, $p2pts) {
 
     $uplbutton = '<div class="fileUpload btn btn-primary">
