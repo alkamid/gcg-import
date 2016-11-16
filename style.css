@@ -18,6 +18,24 @@ table.zapis th, table.zapis td {
     padding: 6px 2px;
 }
 
+table.gcg td.rack {
+    width: 6em;
+}
+
+table.gcg td.position {
+    width: 2.5em;
+}
+
+table.gcg td.pts {
+    width: 2.5em;
+    text-align: right;
+}
+
+table.gcg td.ptssum {
+    text-align: right;
+}
+    
+
 div#left {
     float:left;
     height:100%;

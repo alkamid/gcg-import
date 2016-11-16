@@ -20,8 +20,8 @@ function gcgToTable($gcgtext) {
     $gcg = preg_split("/\\r\\n|\\r|\\n/", $gcgtext);
 
     $table = "<table class='gcg'>";
+
     foreach($gcg as $line) {
-        $table .= "<tr>";
         if (substr($line, 0, 1) == '>') {
 
             $lsp = explode(' ', $line);
@@ -36,7 +36,7 @@ function gcgToTable($gcgtext) {
                 }
             }
 
-            $table .= "<td>" . substr($lsp[0], 1) . "</td>";
+            $name = substr($lsp[0], 1);
 
             $rack = $lsp[1];
             $pos = $lsp[2];
@@ -45,30 +45,59 @@ function gcgToTable($gcgtext) {
             $sum = $lsp[5];
 
             if (substr($lsp[2], 0, 1) == '-') {
+                if ($lsp[2] === '-') {
+                    $move = 'pas';
+                    $pts = $lsp[4];
+                    $sum = $lsp[5];
+                }
+                else {
+                    $move = 'wym. ' . substr($lsp[2], 1);
+                    $pts = $lsp[3];
+                    $sum = $lsp[4];
+                }
                 $pos = '';
-                $move = 'wym. ' . substr($lsp[2], 1);
-                $pts = $lsp[3];
-                $sum = $lsp[4];
             }
             elseif (substr($lsp[2], 0, 1) == '(') {
                 $rack = $lsp[2];
                 $pos = '';
                 $move = '';
-                $pts = $lsp[3];
-                $sum = $lsp[4];
+                if (substr($lsp[3], 0, 1) == '+') {
+                    $bonus = intval(substr($lsp[3], 1))/2;
+                    $pts = '+' . $bonus;
+                    $sum = intval($lsp[4]) - $bonus;
+                }
+                else {
+                    $pts = $lsp[3];
+                    $sum = $lsp[4];
+                }
             }
 
-            $table .= "<td style='width:6em'>" . $rack . "</td>";
-            $table .= "<td style='width:2.5em'>" . $pos . "</td>";
-            $table .= "<td>" . $move . "</td>";
-            $table .= "<td style='width:2.5em; text-align:right'>" . $pts . "</td>";
-            $table .= "<td style='text-align:right'>" . $sum . "</td>";
-            }
-        $table .= "</tr>";
+            $table .= moveTableLine($name, $rack, $pos, $move, $pts, $sum);
+        }
+        elseif (substr($line, 0, 1) == '#' && substr($line, 0, 7) !== '#player') {
+            $table .= '<tr><td colspan=6>' . $line . '</td></tr>';
+        }
+        
     }
+    $last = getFinalScore($gcgtext);
+    $table .= moveTableLine($last['p2name'] . ':', $last['rack'], '', '', '-' . $last['diff'], $last['p2']);
     $table .= "</table>";
     return $table;
 }
+
+function moveTableLine($name, $rack, $pos, $move, $pts, $sum) {
+
+    $tr = "<tr>";
+    $tr .= "<td>" . $name . "</td>";    
+    $tr .= "<td class='rack'>" . $rack . "</td>";
+    $tr .= "<td class='position'>" . $pos . "</td>";
+    $tr .= "<td>" . $move . "</td>";
+    $tr .= "<td class='pts'>" . $pts . "</td>";
+    $tr .= "<td class='ptssum'>" . $sum . "</td>";
+    $tr .= "</tr>";
+    return $tr;     
+}
+
 
 function checkMovesEncoding($gcgtext) {
     $gcg = preg_split("/\\r\\n|\\r|\\n/", $gcgtext);
@@ -96,11 +125,15 @@ function getFinalScore($gcgtext) {
             if (!isset($playerA) && substr($lsp[2], 0, 1) == '(') {
                 $letters_value = intval(substr($lsp[3], 1)) / 2;
                 $playerA = array($lsp[0], intval(end($lsp))-$letters_value);
+                $out['rack'] = $lsp[2];
             }
             elseif (isset($playerA) && $lsp[0] != $playerA[0]) {
                 $playerB = array($lsp[0], intval(end($lsp))-$letters_value);
                 $out['p1'] = $playerA[1];
                 $out['p2'] = $playerB[1];
+                $out['diff'] = $letters_value;
+                $out['p1name'] = substr($playerA[0], 1, -1);
+                $out['p2name'] = substr($playerB[0], 1, -1);
                 return $out;
             }
         }
