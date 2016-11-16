@@ -57,14 +57,14 @@ function gcgToTable($gcgtext) {
             $sum = $lsp[5];
 
             if ($i < $limit-1 && strpos($gcg[$i+1], '--') !== false) {
-                $stats[($current_player == $players['p1']) ? 'p1' : 'p2']['chall'] += 1;
+                $stats = addStat($current_player, $players['p1'], $players['p2'], $stats, 'chall', 1);
                 $move = 'str. (' . $lsp[3] . ')';
                 $pts = '+0';
                 $sum = intval($lsp[5]) - intval($lsp[4]);
                 $i += 1;
             }
             elseif (isPartLowercase($lsp[3])) {
-                $stats[($current_player == $players['p1']) ? 'p1' : 'p2']['blanks'] += 1;
+                $stats = addStat($current_player, $players['p1'], $players['p2'], $stats, 'blanks', 1);
             }
 
             if (substr($lsp[2], 0, 1) == '-') {
@@ -75,7 +75,7 @@ function gcgToTable($gcgtext) {
                 }
                 else {
                     $move = 'wym. ' . substr($lsp[2], 1);
-                    $stats[($current_player == $players['p1']) ? 'p1' : 'p2']['exch'] += 1;
+                    $stats = addStat($current_player, $players['p1'], $players['p2'], $stats, 'exch', 1);
                     $pts = $lsp[3];
                     $sum = $lsp[4];
                 }
@@ -97,13 +97,13 @@ function gcgToTable($gcgtext) {
             }
 
             if (isBingo($rack, $move)) {
-                $stats[($current_player == $p1name) ? 'p1' : 'p2']['bingos'] += 1;
+                $stats = addStat($current_player, $players['p1'], $players['p2'], $stats, 'bingos', 1);
             }
 
             $table .= moveTableLine($current_player, $rack, $pos, $move, $pts, $sum);
 
             if ($i == $limit -2 && ($stats['p1']['blanks'] + $stats['p2']['blanks'] < 2)) {
-                $stats[($current_player == $players['p1']) ? 'p2' : 'p1']['blanks'] += substr_count($rack, '?');
+                $stats = addStat($current_player, $players['p1'], $players['p2'], $stats, 'blanks', substr_count($rack, '?'));
             }
         }
         elseif (substr($line, 0, 1) == '#' && substr($line, 0, 7) !== '#player') {
@@ -120,6 +120,18 @@ function gcgToTable($gcgtext) {
     $output['stats'] = $stats;
     $output['players'] = $players;
     return $output;
+}
+
+function addStat($current_player, $p1, $p2, $stats, $key, $value) {
+    if ($current_player == $p1) {
+        $player_key = 'p1';
+    }
+    elseif ($current_player == $p2) {
+        $player_key = 'p2';
+    }
+
+    $stats[$player_key][$key] += $value;
+    return $stats;
 }
 
 function isBingo($rack, $move) {
