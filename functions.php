@@ -16,24 +16,42 @@ function uploadButton($tour_id, $round, $p1, $p2, $p1pts, $p2pts) {
 
 }
 
+function isPartLowercase($string) {
+    return (bool) preg_match('/\p{Ll}/u', $string);
+}
+
 function gcgToTable($gcgtext) {
     $gcg = preg_split("/\\r\\n|\\r|\\n/", $gcgtext);
 
     $table = "<table class='gcg'>";
 
+    $stats['p1']['bingos'] = 0;
+    $stats['p2']['bingos'] = 0;
+    $stats['p1']['blanks'] = 0;
+    $stats['p2']['blanks'] = 0;
+    $stats['p1']['chall'] = 0;
+    $stats['p2']['chall'] = 0;
+
     foreach($gcg as $line) {
-        if (substr($line, 0, 1) == '>') {
 
-            $lsp = explode(' ', $line);
+        $lsp = explode(' ', $line);
+        
+        if (substr($line, 0, 8) == '#player1') {
+            $p1name = $lsp[1];
+        }
+        elseif (substr($line, 0, 8) == '#player2') {
+            $p2name = $lsp[1];
+        }
+        elseif (substr($line, 0, 1) == '>') {
 
-            if (!isset($playerA)) {
-                $playerA = substr($lsp[0], 1, -1);
+            $current_player = substr($lsp[0], 1, -1);
+
+            if (isPartLowercase($lsp[3])) {
+                $stats[($current_player == $p1name) ? 'p1' : 'p2']['blanks'] += 1;
             }
-            elseif (!isset($playerB)) {
-                $newplayer = substr($lsp[0], 1, -1);
-                if ($newplayer !== $playerA) {
-                    $playerB = $newplayer;
-                }
+
+            if ($lsp[2] == '--') {
+                $stats[($current_player == $p1name) ? 'p1' : 'p2']['chall'] += 1;
             }
 
             $name = substr($lsp[0], 1);
@@ -47,6 +65,11 @@ function gcgToTable($gcgtext) {
             if (substr($lsp[2], 0, 1) == '-') {
                 if ($lsp[2] === '-') {
                     $move = 'pas';
+                    $pts = $lsp[4];
+                    $sum = $lsp[5];
+                }
+                elseif ($lsp[2] === '--') {
+                    $move = 'strata';
                     $pts = $lsp[4];
                     $sum = $lsp[5];
                 }
@@ -72,6 +95,10 @@ function gcgToTable($gcgtext) {
                 }
             }
 
+            if (isBingo($rack, $move)) {
+                $stats[($current_player == $p1name) ? 'p1' : 'p2']['bingos'] += 1;
+            }
+
             $table .= moveTableLine($name, $rack, $pos, $move, $pts, $sum);
         }
         elseif (substr($line, 0, 1) == '#' && substr($line, 0, 7) !== '#player') {
@@ -82,6 +109,37 @@ function gcgToTable($gcgtext) {
     $last = getFinalScore($gcgtext);
     $table .= moveTableLine($last['p2name'] . ':', $last['rack'], '', '', '-' . $last['diff'], $last['p2']);
     $table .= "</table>";
+    
+    $table .= statsTable($stats);
+    
+    return $table;
+}
+
+function isBingo($rack, $move) {
+    if (strlen($rack) < 7) {
+            return FALSE;
+        }
+    
+    if (preg_match_all('/\p{Ll}/u', $move) == substr_count($rack, '?')) {
+        $rack_no_blanks = str_replace('?', '', $rack);
+        $move_no_blanks = preg_replace('/\p{Ll}/u', '', $move);
+        $move_no_dots = str_replace('.', '', $move_no_blanks);
+        if (count_chars($rack_no_blanks) == count_chars($move_no_dots)) {
+            return TRUE;
+        }
+    }
+    else {
+        return FALSE;
+    }
+    return FALSE;
+}
+
+function statsTable($stats) {
+    $table = '<table class="stats"><tr><td></td><td>p1</td><td>p2</td></tr>';
+    $table .= '<tr><td>blanki</td><td>' . $stats['p1']['blanks'] . '</td><td>'. $stats['p2']['blanks'] . '</td></tr>';
+    $table .= '<tr><td>premie</td><td>' . $stats['p1']['bingos'] . '</td><td>'. $stats['p2']['bingos'] . '</td></tr>';
+    $table .= '<tr><td>straty</td><td>' . $stats['p1']['chall'] . '</td><td>'. $stats['p2']['chall'] . '</td></tr>';
+    $table .= '</table>';
     return $table;
 }
 
