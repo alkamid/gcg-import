@@ -34,8 +34,10 @@ function gcgToTable($gcgtext) {
     $stats['p1']['exch'] = 0;
     $stats['p2']['exch'] = 0;
 
-    foreach($gcg as $line) {
-
+    $limit = sizeof($gcg);
+    $i = 0;
+    while ($i <= $limit) {
+        $line = $gcg[$i];
         $lsp = explode(' ', $line);
         
         if (substr($line, 0, 8) == '#player1') {
@@ -48,30 +50,26 @@ function gcgToTable($gcgtext) {
 
             $current_player = substr($lsp[0], 1, -1);
 
-            if (isPartLowercase($lsp[3])) {
-                $stats[($current_player == $players['p1']) ? 'p1' : 'p2']['blanks'] += 1;
-            }
-
-            if ($lsp[2] == '--') {
-                $stats[($current_player == $players['p1']) ? 'p1' : 'p2']['chall'] += 1;
-            }
-
-            $name = substr($lsp[0], 1);
-
             $rack = $lsp[1];
             $pos = $lsp[2];
             $move = $lsp[3];
             $pts = $lsp[4];
             $sum = $lsp[5];
 
+            if ($i < $limit-1 && strpos($gcg[$i+1], '--') !== false) {
+                $stats[($current_player == $players['p1']) ? 'p1' : 'p2']['chall'] += 1;
+                $move = 'str. (' . $lsp[3] . ')';
+                $pts = '+0';
+                $sum = intval($lsp[5]) - intval($lsp[4]);
+                $i += 1;
+            }
+            elseif (isPartLowercase($lsp[3])) {
+                $stats[($current_player == $players['p1']) ? 'p1' : 'p2']['blanks'] += 1;
+            }
+
             if (substr($lsp[2], 0, 1) == '-') {
                 if ($lsp[2] === '-') {
                     $move = 'pas';
-                    $pts = $lsp[4];
-                    $sum = $lsp[5];
-                }
-                elseif ($lsp[2] === '--') {
-                    $move = 'strata';
                     $pts = $lsp[4];
                     $sum = $lsp[5];
                 }
@@ -102,12 +100,17 @@ function gcgToTable($gcgtext) {
                 $stats[($current_player == $p1name) ? 'p1' : 'p2']['bingos'] += 1;
             }
 
-            $table .= moveTableLine($name, $rack, $pos, $move, $pts, $sum);
+            $table .= moveTableLine($current_player, $rack, $pos, $move, $pts, $sum);
+
+            if ($i == $limit -2 && ($stats['p1']['blanks'] + $stats['p2']['blanks'] < 2)) {
+                $stats[($current_player == $players['p1']) ? 'p2' : 'p1']['blanks'] += substr_count($rack, '?');
+            }
         }
         elseif (substr($line, 0, 1) == '#' && substr($line, 0, 7) !== '#player') {
             $table .= '<tr><td colspan=6>' . $line . '</td></tr>';
         }
         
+        $i += 1;   
     }
     $last = getFinalScore($gcgtext);
     $table .= moveTableLine($last['p2name'] . ':', $last['rack'], '', '', '-' . $last['diff'], $last['p2']);
@@ -160,7 +163,7 @@ function nonzero($number) {
 function moveTableLine($name, $rack, $pos, $move, $pts, $sum) {
 
     $tr = "<tr>";
-    $tr .= "<td>" . $name . "</td>";    
+    $tr .= "<td>" . $name . ":</td>";    
     $tr .= "<td class='rack'>" . $rack . "</td>";
     $tr .= "<td class='position'>" . $pos . "</td>";
     $tr .= "<td>" . $move . "</td>";
