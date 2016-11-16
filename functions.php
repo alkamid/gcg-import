@@ -20,7 +20,7 @@ function checkPlayers($gcgtext) {
             }
         }
     }
-    return false;
+    return true;
 }
 
 function uploadButton($tour_id, $round, $p1, $p2, $p1pts, $p2pts) {
