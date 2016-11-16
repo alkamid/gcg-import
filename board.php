@@ -192,7 +192,11 @@ function showBoard($moves, $gcgtext) {
     
     print $output;
 
-    print '[<a href="download.php?turniej=' . $_GET['turniej'] . '&runda=' . $_GET['runda'] . '&p1=' . $_GET['p1'] . '&p2=' . $_GET['p2'] . '">ściągnij zapis</a>]<br /><br />';
+    $gcgtable = gcgToTable($gcgtext);
+    
+    print statsTable($gcgtable['stats'], $gcgtable['players']);
+
+    print '[<a href="download.php?turniej=' . $_GET['turniej'] . '&runda=' . $_GET['runda'] . '&p1=' . $_GET['p1'] . '&p2=' . $_GET['p2'] . '">ściągnij zapis</a>]';
 
     if (!isset($_SESSION['user'])) {
         $_SESSION['user']="";
@@ -239,7 +243,7 @@ function showBoard($moves, $gcgtext) {
 
 
     $gcgprint = '<div id="gcg">';
-    $gcgprint .= gcgToTable($gcgtext);
+    $gcgprint .= $gcgtable['table'];
 
     $gcgprint .='</div>';
     print $gcgprint;

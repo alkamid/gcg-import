@@ -34,7 +34,14 @@ table.gcg td.pts {
 table.gcg td.ptssum {
     text-align: right;
 }
-    
+
+table.stats td.statsint {
+    text-align: right;
+}
+
+table.stats th {
+    padding-right: 5px;
+}
 
 div#left {
     float:left;

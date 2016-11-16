@@ -31,27 +31,29 @@ function gcgToTable($gcgtext) {
     $stats['p2']['blanks'] = 0;
     $stats['p1']['chall'] = 0;
     $stats['p2']['chall'] = 0;
+    $stats['p1']['exch'] = 0;
+    $stats['p2']['exch'] = 0;
 
     foreach($gcg as $line) {
 
         $lsp = explode(' ', $line);
         
         if (substr($line, 0, 8) == '#player1') {
-            $p1name = $lsp[1];
+            $players['p1'] = $lsp[1];
         }
         elseif (substr($line, 0, 8) == '#player2') {
-            $p2name = $lsp[1];
+            $players['p2'] = $lsp[1];
         }
         elseif (substr($line, 0, 1) == '>') {
 
             $current_player = substr($lsp[0], 1, -1);
 
             if (isPartLowercase($lsp[3])) {
-                $stats[($current_player == $p1name) ? 'p1' : 'p2']['blanks'] += 1;
+                $stats[($current_player == $players['p1']) ? 'p1' : 'p2']['blanks'] += 1;
             }
 
             if ($lsp[2] == '--') {
-                $stats[($current_player == $p1name) ? 'p1' : 'p2']['chall'] += 1;
+                $stats[($current_player == $players['p1']) ? 'p1' : 'p2']['chall'] += 1;
             }
 
             $name = substr($lsp[0], 1);
@@ -75,6 +77,7 @@ function gcgToTable($gcgtext) {
                 }
                 else {
                     $move = 'wym. ' . substr($lsp[2], 1);
+                    $stats[($current_player == $players['p1']) ? 'p1' : 'p2']['exch'] += 1;
                     $pts = $lsp[3];
                     $sum = $lsp[4];
                 }
@@ -110,9 +113,10 @@ function gcgToTable($gcgtext) {
     $table .= moveTableLine($last['p2name'] . ':', $last['rack'], '', '', '-' . $last['diff'], $last['p2']);
     $table .= "</table>";
     
-    $table .= statsTable($stats);
-    
-    return $table;
+    $output['table'] = $table;
+    $output['stats'] = $stats;
+    $output['players'] = $players;
+    return $output;
 }
 
 function isBingo($rack, $move) {
@@ -134,13 +138,23 @@ function isBingo($rack, $move) {
     return FALSE;
 }
 
-function statsTable($stats) {
-    $table = '<table class="stats"><tr><td></td><td>p1</td><td>p2</td></tr>';
-    $table .= '<tr><td>blanki</td><td>' . $stats['p1']['blanks'] . '</td><td>'. $stats['p2']['blanks'] . '</td></tr>';
-    $table .= '<tr><td>premie</td><td>' . $stats['p1']['bingos'] . '</td><td>'. $stats['p2']['bingos'] . '</td></tr>';
-    $table .= '<tr><td>straty</td><td>' . $stats['p1']['chall'] . '</td><td>'. $stats['p2']['chall'] . '</td></tr>';
+function statsTable($stats, $players) {
+    $table = '<table class="stats"><tr><th></th><th>'. $players['p1'] . '</th><th>'. $players['p2'] .'</th></tr>';
+    $table .= '<tr><td>blanki</td><td class="statsint">' . nonzero($stats['p1']['blanks']) . '</td><td class="statsint">'. nonzero($stats['p2']['blanks']) . '</td></tr>';
+    $table .= '<tr><td style="padding-right:5px">premie</td><td class="statsint">' . nonzero($stats['p1']['bingos']) . '</td><td class="statsint">'. nonzero($stats['p2']['bingos']) . '</td></tr>';
+    $table .= '<tr><td>straty</td><td class="statsint">' . nonzero($stats['p1']['chall']) . '</td><td class="statsint">'. nonzero($stats['p2']['chall']) . '</td></tr>';
+    $table .= '<tr><td style="padding-right:5px">wymiany</td><td class="statsint">' . nonzero($stats['p1']['exch']) . '</td><td class="statsint">'. nonzero($stats['p2']['exch']) . '</td></tr>';
     $table .= '</table>';
     return $table;
+}
+
+function nonzero($number) {
+    if (intval($number) == 0) {
+            return '';
+        }
+    else {
+        return $number;
+    }
 }
 
 function moveTableLine($name, $rack, $pos, $move, $pts, $sum) {
