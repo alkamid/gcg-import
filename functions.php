@@ -39,8 +39,8 @@ function uploadButton($tour_id, $round, $p1, $p2, $p1pts, $p2pts) {
 
 }
 
-function isPartLowercase($string) {
-    return (bool) preg_match('/\p{Ll}/u', $string);
+function countLowercase($string) {
+    return (int) preg_match_all('/\p{Ll}/u', $string);
 }
 
 function gcgToTable($gcgtext) {
@@ -86,8 +86,8 @@ function gcgToTable($gcgtext) {
                 $sum = intval($lsp[5]) - intval($lsp[4]);
                 $i += 1;
             }
-            elseif (isPartLowercase($lsp[3])) {
-                $stats = addStat($current_player, $players['p1'], $players['p2'], $stats, 'blanks', 1);
+            elseif (countLowercase($lsp[3]) > 0) {
+                $stats = addStat($current_player, $players['p1'], $players['p2'], $stats, 'blanks', countLowercase($lsp[3]));
             }
 
             if (substr($lsp[2], 0, 1) == '-') {
@@ -158,22 +158,20 @@ function addStat($current_player, $p1, $p2, $stats, $key, $value) {
 }
 
 function isBingo($rack, $move) {
-    if (strlen($rack) < 7) {
-            return FALSE;
+    if (mb_strlen($rack) < 7) {
+            return false;
         }
-    
-    if (preg_match_all('/\p{Ll}/u', $move) == substr_count($rack, '?')) {
+    elseif (preg_match_all('/\p{Ll}/u', $move) == substr_count($rack, '?')) {
         $rack_no_blanks = str_replace('?', '', $rack);
         $move_no_blanks = preg_replace('/\p{Ll}/u', '', $move);
         $move_no_dots = str_replace('.', '', $move_no_blanks);
         if (count_chars($rack_no_blanks) == count_chars($move_no_dots)) {
-            return TRUE;
+            return true;
         }
     }
     else {
-        return FALSE;
+        return false;
     }
-    return FALSE;
 }
 
 function statsTable($stats, $players) {
@@ -337,11 +335,11 @@ function mergeGCG($newfile, $oldfile) {
             }
         }
 
-        if (($is_line_the_same == 1) && (strlen($newline[1]) <= 7 && (strlen($newline[1]) > strlen($oldline[1])))) {
+        if (($is_line_the_same == 1) && (mb_strlen($newline[1]) <= 7 && (mb_strlen($newline[1]) > mb_strlen($oldline[1])))) {
                 $oldline[1] = $newline[1];
                 $resultline = implode(' ', $oldline);
         }
-        elseif (strlen($new[$l]) > 2) {
+        elseif (mb_strlen($new[$l]) > 2) {
             $resultline = $new[$l];
         }
 
