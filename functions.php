@@ -136,7 +136,7 @@ function gcgToTable($gcgtext) {
         $i += 1;   
     }
     $last = getFinalScore($gcgtext);
-    $table .= moveTableLine($last['p2name'] . ':', $last['rack'], '', '', '-' . $last['diff'], $last['p2']);
+    $table .= moveTableLine($last['p2name'], $last['rack'], '', '', '-' . $last['diff'], $last['p2']);
     $table .= "</table>";
     
     $output['table'] = $table;
@@ -225,12 +225,10 @@ function checkMovesEncoding($gcgtext) {
 
 function getFinalScore($gcgtext) {
     $gcg = preg_split("/\\r\\n|\\r|\\n/", $gcgtext);
-
     foreach(array_reverse($gcg) as $line) {
         if (substr($line, 0, 1) == '>') {
             $lsp = explode(' ', $line);
-
-            if (!isset($playerA) && substr($lsp[2], 0, 1) == '(') {
+            if (!isset($playerA) && (substr($lsp[2], 0, 1) == '(' || $lsp[2] == '--')) {
                 $letters_value = intval(substr($lsp[3], 1)) / 2;
                 $playerA = array($lsp[0], intval(end($lsp))-$letters_value);
                 $out['rack'] = $lsp[2];

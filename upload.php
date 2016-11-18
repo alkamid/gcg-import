@@ -15,7 +15,7 @@ function validateGCG($gcg_file, $p1, $p2) {
             }
     
     if ($gcgscores === -1) {
-        return array(FALSE, 'Nie znaleziono wyniku — prawdopodobnie nieprawidłowy plik .gcg' . $p1 . $p2);
+        return array(FALSE, 'Nie znaleziono wyniku — prawdopodobnie nieprawidłowy plik .gcg');
     }
     else {
         if ((abs((int) $gcgscores['p1'] - (int) $p1) < 30 && abs((int) $gcgscores['p2'] - (int) $p2) < 30) || (abs((int) $gcgscores['p1'] - (int) $p2) < 30 && abs((int) $gcgscores['p2'] - (int) $p1) < 30)) {
