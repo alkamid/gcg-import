@@ -1,5 +1,35 @@
 <?php
 
+require_once "../system.php";
+function showGameInfo($tour, $player1, $player2) {
+    db_open();
+    $query = "select P1.name_show as p1name, P2.name_show as p2name, T.name as tour, HH.runda, HH.host
+              from " . TBL_TOURHH ." as HH
+              inner join " . TBL_PLAYER . " as P1 on P1.id = HH.player1
+              inner join " . TBL_PLAYER . " as P2 on P2.id = HH.player2
+              inner join " . TBL_TOURS . " as T on T.id = HH.turniej
+              WHERE T.id=" .$tour. " AND HH.player1=" .$player1 . " AND HH.player2=" . $player2 . ";";
+    $result = db_query($query);
+    if ($result) {
+        $res = db_fetch_row($result);
+        $output = $res[2] . ', Runda ' . $res[3] . ': ';
+        if ($res[4] == 1) {
+            $output .= $res[0] . ' — ' . $res[1];
+        }
+        else {
+            $output .= $res[1] . ' — ' . $res[0];
+        }
+        return $output;
+    }
+    else {
+        print db_error();
+    }
+}
+
+function nextPrevGame($tour, $player1, $player2) {
+
+}
+
 function checkPlayers($gcgtext) {
     $gcg = preg_split("/\\r\\n|\\r|\\n/", $gcgtext);
     
@@ -228,7 +258,7 @@ function getFinalScore($gcgtext) {
     foreach(array_reverse($gcg) as $line) {
         if (substr($line, 0, 1) == '>') {
             $lsp = explode(' ', $line);
-            if (!isset($playerA) && (substr($lsp[2], 0, 1) == '(' || $lsp[2] == '--')) {
+            if (!isset($playerA) && ((substr($lsp[2], 0, 1) == '(' || substr($lsp[1], 0, 1) == '(') || $lsp[2] == '--')) {
                 $letters_value = intval(substr($lsp[3], 1)) / 2;
                 $playerA = array($lsp[0], intval(end($lsp))-$letters_value);
                 $out['rack'] = $lsp[2];
