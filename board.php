@@ -51,6 +51,7 @@ session_start();
 require_once 'functions.php';
 mb_internal_encoding("UTF-8");
 
+
 function showBoard($moves, $gcgtext) {
     $board = array_fill(0, 15, array_fill(0, 15, 0));
     $j = 0;

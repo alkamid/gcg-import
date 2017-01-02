@@ -121,8 +121,8 @@ function gcgToTable($gcgtext) {
             }
 
             if (substr($lsp[2], 0, 1) == '-') {
-                if ($lsp[2] === '-') {
-                    $move = 'pas';
+                if ($lsp[2] === '-' && $lsp[3] === ' ') {
+                    $move = 'pas' ;
                     $pts = $lsp[4];
                     $sum = $lsp[5];
                 }
@@ -149,7 +149,7 @@ function gcgToTable($gcgtext) {
                 }
             }
 
-            if (isBingo($rack, $move)) {
+            if (isBingo($move)) {
                 $stats = addStat($current_player, $players['p1'], $players['p2'], $stats, 'bingos', 1);
             }
 
@@ -187,17 +187,9 @@ function addStat($current_player, $p1, $p2, $stats, $key, $value) {
     return $stats;
 }
 
-function isBingo($rack, $move) {
-    if (mb_strlen($rack) < 7) {
-            return false;
-        }
-    elseif (preg_match_all('/\p{Ll}/u', $move) == substr_count($rack, '?')) {
-        $rack_no_blanks = str_replace('?', '', $rack);
-        $move_no_blanks = preg_replace('/\p{Ll}/u', '', $move);
-        $move_no_dots = str_replace('.', '', $move_no_blanks);
-        if (count_chars($rack_no_blanks) == count_chars($move_no_dots)) {
-            return true;
-        }
+function isBingo($move) {
+    if (preg_match_all('/\p{L}/u', $move) == 7) {
+        return true;
     }
     else {
         return false;
