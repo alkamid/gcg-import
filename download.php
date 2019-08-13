@@ -16,6 +16,7 @@ $result = db_query($query);
 
 if ($result) {
     $gcgtext = db_fetch_row($result)[0];
+    $gcgtext = "#character-encoding UTF-8\r\n".$gcgtext;
     echo $gcgtext;
 }
 ?>
