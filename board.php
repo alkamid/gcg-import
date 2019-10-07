@@ -111,6 +111,9 @@ function showBoard($moves, $gcgtext) {
 
     $length = count($moves);
     for ($k = 0; $k < $length; $k++) {
+        if (substr($moves[$k], 0, 1) == '#') {
+            continue;
+        }
         $mv = explode(' ', $moves[$k]);
         if ($k < $length - 1) {
             $next_mv = explode(' ', $moves[$k+1]);
@@ -253,7 +256,7 @@ function showBoard($moves, $gcgtext) {
 
 function generateMovesTable($gcg) {
     $all_lines = preg_split("/\\r\\n|\\r|\\n/", $gcg);
-    return array_slice($all_lines, 2);
+    return $all_lines;
 }
 
 $player1=$_GET['p1'];
